@@ -2,6 +2,8 @@
 
 ## Status
 
+Follow-up font and edge case review: [break-ui findings](docs/ux/qa/break-ui-review.md). A development-only URL-persisted data switch now covers demo, worst-case, empty, one-item and 1,284-row states without overwriting saved shop data. Nine source findings are reported for review; design fixes await selection under the skill's report-before-fix rule. Current browser verification remains blocked.
+
 Latest follow-up: Manrope replaces Inter, the generated logo is now applied, and navigation uses a persistent animated pill with fading labels and short screen entrances. Reduced-motion settings disable these transitions. Production build validation covers the changes; their visual appearance and animation timing still require browser inspection.
 
 Code refinements and domain checks are complete. Final browser visual and interaction verification is blocked. The browser tool refused authority to inspect the open localhost page because its URL policy did not allow the current protocol. No alternate browser or indirect page capture was used to bypass that decision.
@@ -29,7 +31,7 @@ Earlier QA is preserved at `docs/ux/qa/design-qa-before-refinement.md`. Its scre
 
 ## Required design surfaces
 
-- **Typography:** retained Inter and reference hierarchy; increased form/product/helper text sizes; wrapping for long names and amounts.
+- **Typography:** uses locally bundled Manrope and the reference hierarchy; earlier work increased form/product/helper text sizes and wrapping. The latest review identifies remaining small labels and numeric layout risks.
 - **Spacing:** primary controls at least 48 CSS pixels; enlarged clear/dismiss/header controls; safe-area clearance for scrolling content.
 - **Color:** retained gray, white and burnt orange; replaced category rainbow tiles with neutral surfaces and restrained accent use.
 - **Icons/assets:** one regular-weight Phosphor family through shared context, with 24 px shortcuts, 22 px navigation, and 18–20 px action indicators. Product and forecast symbols replace generic lightning imagery. No new raster or handmade SVG icons.
