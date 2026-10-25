@@ -1,4 +1,6 @@
-import { createDemoData, type Product, type ShopData } from "./demo-data";
+import { createDemoData, FIELD_LIMITS, type Product, type ShopData } from "./demo-data.ts";
+
+export const entryReviewData = { name: "Aleksandra Wiśniewska-Kowalczyk", email: "bartholomew.fitzgerald@northwind-industries-holdings.example.com", shopName: "Aleksandra Wiśniewska-Kowalczyk · Addis Wholesale Market" };
 
 export const reviewModes = ["demo", "worst", "empty", "one", "huge"] as const;
 export type ReviewMode = typeof reviewModes[number];
@@ -20,21 +22,21 @@ export function createReviewData(mode: ReviewMode): ShopData {
     { name: "Đặng Thị Ngọc Hân · Jasmine rice · 1 kg", stock: 0, price: 0 },
     { name: "نور الهدى · قهوة محمصة · ٢٥٠ غرام", stock: 1 },
     { name: "<b>Special offer</b> & family pack", forecast: null },
-    { name: "Coffee · 250 g", stock: 0 },
+    { name: "Coffee · 250 g", stock: 0, forecast: [0, 0, 0, 0, 0, 0, 0] },
     { name: "Coffee · 250 g", stock: 12, unit: "box" },
   ];
   const count = mode === "huge" ? 1284 : examples.length;
-  const products = Array.from({ length: count }, (_, i) => ({ ...data.products[i % data.products.length], ...examples[i % examples.length], id: `review-${i}`, ...(mode === "huge" ? { name: `${examples[i % examples.length].name} · batch ${i + 1}` } : {}) }));
+  const products = Array.from({ length: count }, (_, i) => ({ ...data.products[i % data.products.length], ...examples[i % examples.length], id: `review-${i}`, ...(mode === "huge" ? { name: `${String(examples[i % examples.length].name).slice(0, FIELD_LIMITS.productName - ` · batch ${i + 1}`.length)} · batch ${i + 1}` } : {}) }));
   const now = Date.now();
   const saleCount = mode === "huge" ? 1284 : 8;
   return {
     // Fits the 60-character setup field, but challenges header width.
-    shopName: "Aleksandra Wiśniewska-Kowalczyk · Addis Wholesale Market",
+    shopName: entryReviewData.shopName,
     // Missing optional snapshot tests the explicit unavailable-date fallback.
     products,
     sales: Array.from({ length: saleCount }, (_, i) => {
       const p = products[i % products.length];
-      return { id: `review-sale-${i}`, productId: p.id, productName: p.name, quantity: i === 0 ? 1 : 1284, unit: p.unit, total: i === 0 ? 12345678.9 : 0.3, createdAt: new Date(now - (mode === "huge" ? i * 60000 : [0, 86400000 * 12, 86400000 * 365 * 3, 60000][i % 4])).toISOString() };
+      return { id: `review-sale-${i}`, productId: p.id, productName: p.name, quantity: i === 0 ? 1 : 1284, unit: p.unit, total: i === 0 ? 12345678.9 : 0.3, createdAt: new Date(now - (mode === "huge" ? i * 60000 : [0, 86400000 * 12, 86400000 * 365 * 3, -300000][i % 4])).toISOString() };
     }),
     receipts: [],
   };

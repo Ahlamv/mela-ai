@@ -51,7 +51,7 @@ Run `npm test` with Node.js 22.18 or newer. See `design-qa.md` for current verif
 
 `npm run dev` shows a development-only data switch below the phone. Use `/?data=worst` for long names, non-Latin text, zero prices, large amounts and mixed stock states. Other values are `demo`, `empty`, `one` and `huge` (1,284 products and sales). Choose **Saved shop** to return to normal storage.
 
-Fixture edits are temporary and never overwrite the saved shop. The selected dataset survives a page reload in the URL; switching datasets resets temporary edits. The switch and fixture module are excluded from the production page. See [the font and break-ui review](docs/ux/qa/break-ui-review.md) for findings and proposed fixes. Browser verification remains pending.
+Fixture edits are temporary and never overwrite the saved shop. The selected dataset survives a page reload in the URL; switching datasets resets temporary edits. The switch and fixture module are excluded from the production page. See [the font and break-ui review](docs/ux/qa/break-ui-review.md) for the historical findings, and [the fixes and verification](docs/ux/qa/break-ui-fixes.md) for current status. Browser verification remains pending.
 
 ## Onboarding and account preview
 

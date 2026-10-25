@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowLeft, ArrowRight, Check, CheckCircle, ChartLineUp, Eye, EyeSlash, LockKey, Package, Receipt, Storefront } from "@phosphor-icons/react";
+import { FIELD_LIMITS, nameError } from "@/lib/demo-data";
 import { BrandLogo } from "./brand-logo";
 import styles from "./entry-flow.module.css";
+
+export type EntryPreviewData = { name: string; email: string; shopName: string };
 
 type Stage = "intro" | "tour" | "access" | "signin" | "signup" | "verify" | "forgot" | "reset" | "resetDone" | "setup";
 const slides = [
@@ -21,15 +24,15 @@ function PasswordField({ label = "Password", value, onChange, error, id, autoCom
   </span>{error && <span className={styles.error} id={`${id}-error`} role="alert">{error}</span>}</label>;
 }
 
-export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop: boolean; onBegin: (empty: boolean, name: string) => void; onContinue: () => void }) {
+export function EntryFlow({ hasSavedShop, onBegin, onContinue, initialValues }: { initialValues?: EntryPreviewData; hasSavedShop: boolean; onBegin: (empty: boolean, name: string) => void; onContinue: () => void }) {
   const [stage, setStage] = useState<Stage>("intro");
   const [step, setStep] = useState(0);
   const [stockMoved, setStockMoved] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [email, setEmail] = useState(initialValues?.email ?? "");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const [shopName, setShopName] = useState("");
+  const [shopName, setShopName] = useState(initialValues?.shopName ?? "");
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
@@ -75,7 +78,7 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop:
   function submitAuth(event: FormEvent) {
     event.preventDefault();
     const next: Record<string, string> = {};
-    if (stage === "signup" && !name.trim()) next.name = "Enter your name.";
+    if (stage === "signup") { const invalidName = nameError(name, FIELD_LIMITS.accountName); if (invalidName) next.name = invalidName; }
     if (!validateEmail()) next.email = "Enter a valid email address.";
     if (password.length < 8) next.password = "Use at least 8 characters.";
     setErrors(next);
@@ -106,7 +109,8 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop:
   }
   function setup(event: FormEvent) {
     event.preventDefault();
-    if (!shopName.trim()) { setErrors({ shop: "Give your shop a name." }); return; }
+    const invalidName = nameError(shopName, FIELD_LIMITS.shopName);
+    if (invalidName) { setErrors({ shop: invalidName }); return; }
     complete(() => onBegin(true, shopName.trim()));
   }
   function back() {
@@ -164,8 +168,8 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop:
       <p className={styles.eyebrow}>{stage === "signin" ? "GOOD TO HAVE YOU BACK" : "YOUR NEXT CHAPTER"}</p><h1>{stage === "signin" ? <>Hello again.<br />How’s the shop?</> : <>Small beginnings.<br />Big possibilities.</>}</h1>
       <p className={styles.description}>{stage === "signin" ? "A clear view of your shop is just a moment away." : "Make a little room for a simpler shop day."}</p>
       <form className={styles.form} onSubmit={submitAuth} noValidate>
-        {stage === "signup" && <label className={styles.field}>Your name<input autoComplete="name" value={name} maxLength={80} onChange={e => setName(e.target.value)} placeholder="How should we call you?" aria-invalid={!!errors.name} aria-describedby={errors.name ? "entry-name-error" : undefined} required />{errors.name && <span id="entry-name-error" className={styles.error} role="alert">{errors.name}</span>}</label>}
-        <label className={styles.field}>Email address<input type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} maxLength={254} value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "entry-email-error" : undefined} required />{errors.email && <span id="entry-email-error" className={styles.error} role="alert">{errors.email}</span>}</label>
+        {stage === "signup" && <label className={styles.field}>Your name<input autoComplete="name" value={name} maxLength={FIELD_LIMITS.accountName} onChange={e => setName(e.target.value)} placeholder="How should we call you?" aria-invalid={!!errors.name} aria-describedby={errors.name ? "entry-name-error" : undefined} required />{errors.name && <span id="entry-name-error" className={styles.error} role="alert">{errors.name}</span>}</label>}
+        <label className={styles.field}>Email address<input type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} maxLength={FIELD_LIMITS.email} value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "entry-email-error" : undefined} required />{errors.email && <span id="entry-email-error" className={styles.error} role="alert">{errors.email}</span>}</label>
         <PasswordField id={`entry-${stage}-password`} autoComplete={stage === "signup" ? "new-password" : "current-password"} value={password} onChange={setPassword} error={errors.password} />
         {stage === "signin" && <button type="button" className={styles.forgot} onClick={() => changeStage("forgot")}>Forgot password?</button>}
         <button type="submit" className={styles.primary} disabled={busy}>{busy ? "Opening your shop…" : stage === "signin" ? "Preview sign in" : "Preview account creation"}<ArrowRight size={19} /></button>
@@ -174,7 +178,7 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop:
       <p className={styles.demoNote}><LockKey size={14} />UI preview · use example details.<br />Credentials aren’t stored or sent.</p>
     </div>}
 
-    {stage === "forgot" && <div className={styles.page} key="forgot"><span className={styles.symbol}><LockKey size={28} /></span><p className={styles.eyebrow}>LET’S GET YOU BACK IN</p><h1>A fresh start<br />for your password.</h1><p className={styles.description}>Enter the email you use for your shop.</p><form className={styles.form} onSubmit={submitRecovery} noValidate><label className={styles.field}>Email address<input type="email" autoComplete="email" autoCapitalize="none" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "recovery-email-error" : undefined} required />{errors.email && <span id="recovery-email-error" className={styles.error} role="alert">{errors.email}</span>}</label><button type="submit" className={styles.primary}>Preview recovery<ArrowRight size={19} /></button></form><button type="button" className={styles.textButton} onClick={() => changeStage("signin")}>Back to sign in</button><p className={styles.demoNote}>UI preview · no recovery email is sent.</p></div>}
+    {stage === "forgot" && <div className={styles.page} key="forgot"><span className={styles.symbol}><LockKey size={28} /></span><p className={styles.eyebrow}>LET’S GET YOU BACK IN</p><h1>A fresh start<br />for your password.</h1><p className={styles.description}>Enter the email you use for your shop.</p><form className={styles.form} onSubmit={submitRecovery} noValidate><label className={styles.field}>Email address<input type="email" autoComplete="email" autoCapitalize="none" maxLength={FIELD_LIMITS.email} value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "recovery-email-error" : undefined} required />{errors.email && <span id="recovery-email-error" className={styles.error} role="alert">{errors.email}</span>}</label><button type="submit" className={styles.primary}>Preview recovery<ArrowRight size={19} /></button></form><button type="button" className={styles.textButton} onClick={() => changeStage("signin")}>Back to sign in</button><p className={styles.demoNote}>UI preview · no recovery email is sent.</p></div>}
 
     {stage === "verify" && <div className={styles.page} key="verify"><span className={styles.symbol}><CheckCircle size={29} /></span><p className={styles.eyebrow}>ONE LITTLE CHECK</p><h1>A small step.<br />Then you’re in.</h1><p className={styles.description}>The live app will verify your email at<br /><strong className={styles.email}>{email.trim()}</strong></p><form className={styles.form} onSubmit={verify} noValidate><label className={styles.field}>6-digit verification code<input className={styles.code} inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={e => { setCode(e.target.value.replace(/\D/g, "")); setErrors({}); }} placeholder="000000" aria-invalid={!!errors.code} aria-describedby="verification-help" required /></label><p id="verification-help" className={styles.codeHint}>Demo code: <strong>123456</strong> · No email was sent.</p>{errors.code && <p className={styles.error} role="alert">{errors.code}</p>}<button type="submit" className={styles.primary}>Continue<ArrowRight size={19} /></button></form><button type="button" className={styles.textButton} onClick={() => setStatus("Your demo code is still 123456. No email is sent in this preview.")}>Resend code</button>{status && <p className={styles.inlineStatus} role="status">{status}</p>}<button type="button" className={styles.textButton} onClick={() => changeStage(emailPurpose === "reset" ? "forgot" : "signup")}>Use a different email</button></div>}
 
@@ -182,7 +186,7 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue }: { hasSavedShop:
 
     {stage === "resetDone" && <div className={`${styles.page} ${styles.successPage}`} key="resetDone"><span className={styles.successSymbol}><Check size={35} /></span><p className={styles.eyebrow}>READY FOR WHAT’S NEXT</p><h1>Back to<br />a clearer day.</h1><p className={styles.description}>That’s the password recovery flow.<br />In the live app, you could now sign in with your new password.</p><button type="button" className={styles.primary} onClick={() => changeStage("signin")}>Back to sign in<ArrowRight size={19} /></button><p className={styles.demoNote}>Preview complete · no password was changed.</p></div>}
 
-    {stage === "setup" && <div className={styles.page} key="setup"><span className={styles.symbol}><Storefront size={30} /></span><p className={styles.eyebrow}>MAKE YOURSELF AT HOME</p><h1>Every good shop<br />starts with a name.</h1><p className={styles.description}>{hasSavedShop ? "Continue where you left off. Your products and sales will stay just as you saved them." : "Set up your space. Your first product comes next."}</p>{hasSavedShop ? <div className={styles.actions}><button type="button" className={styles.primary} disabled={busy} onClick={() => complete(onContinue)}>Continue to saved shop<ArrowRight size={19} /></button></div> : <form className={styles.form} onSubmit={setup} noValidate><label className={styles.field}>Shop name<input autoComplete="organization" maxLength={60} value={shopName} onChange={e => setShopName(e.target.value)} placeholder="e.g. Selam Mini Market" aria-invalid={!!errors.shop} aria-describedby={errors.shop ? "entry-shop-error" : undefined} required />{errors.shop && <span id="entry-shop-error" className={styles.error} role="alert">{errors.shop}</span>}</label><div className={styles.shopDefaults}><span>Currency<strong>ETB · Ethiopian birr</strong></span><span>Language<strong>English</strong></span></div><button type="submit" className={styles.primary} disabled={busy}>{busy ? "Getting your shop ready…" : "Open my demo shop"}<ArrowRight size={19} /></button></form>}<button type="button" className={styles.textButton} disabled={busy} onClick={explore}>{hasSavedShop ? "Back to my saved demo" : "Explore a sample shop instead"}</button><p className={styles.demoNote}>Local demo · your shop stays in this browser.</p></div>}
+    {stage === "setup" && <div className={styles.page} key="setup"><span className={styles.symbol}><Storefront size={30} /></span><p className={styles.eyebrow}>MAKE YOURSELF AT HOME</p><h1>Every good shop<br />starts with a name.</h1><p className={styles.description}>{hasSavedShop ? "Continue where you left off. Your products and sales will stay just as you saved them." : "Set up your space. Your first product comes next."}</p>{hasSavedShop ? <div className={styles.actions}><button type="button" className={styles.primary} disabled={busy} onClick={() => complete(onContinue)}>Continue to saved shop<ArrowRight size={19} /></button></div> : <form className={styles.form} onSubmit={setup} noValidate><label className={styles.field}>Shop name<input autoComplete="organization" maxLength={FIELD_LIMITS.shopName} value={shopName} onChange={e => setShopName(e.target.value)} placeholder="e.g. Selam Mini Market" aria-invalid={!!errors.shop} aria-describedby={errors.shop ? "entry-shop-error" : undefined} required />{errors.shop && <span id="entry-shop-error" className={styles.error} role="alert">{errors.shop}</span>}</label><div className={styles.shopDefaults}><span>Currency<strong>ETB · Ethiopian birr</strong></span><span>Language<strong>English</strong></span></div><button type="submit" className={styles.primary} disabled={busy}>{busy ? "Getting your shop ready…" : "Open my demo shop"}<ArrowRight size={19} /></button></form>}<button type="button" className={styles.textButton} disabled={busy} onClick={explore}>{hasSavedShop ? "Back to my saved demo" : "Explore a sample shop instead"}</button><p className={styles.demoNote}>Local demo · your shop stays in this browser.</p></div>}
     {errors.form && <p className={styles.formError} role="alert">{errors.form}</p>}
   </section>;
 }

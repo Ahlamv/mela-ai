@@ -2,6 +2,8 @@
 
 Reviewed 25 October 2026 using Emil Kowalski's [break-ui skill](https://github.com/emilkowalski/skills/tree/main/skills/break-ui).
 
+> Historical report before fixes. The user subsequently requested fixes; see [current changes and verification](break-ui-fixes.md). Findings below describe the earlier implementation, not the current status.
+
 ## Evidence and scope
 
 This is a source review and executable fixture handoff, not a completed visual audit. Browser access to localhost was denied by the browser tool's URL policy earlier in this chat. No alternate capture route was used. Current screenshots, 320px rendering, 200% browser zoom, keyboard interactions and performance measurements remain pending. Layout failures below are **predicted from CSS**, while copy, schema limits and formatting behavior are verified from code or direct execution.

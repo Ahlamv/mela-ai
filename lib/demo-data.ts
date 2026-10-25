@@ -43,8 +43,38 @@ export function createDemoData(): ShopData {
   };
 }
 
-export const money = (n: number) => new Intl.NumberFormat("en-ET", { maximumFractionDigits: 2 }).format(n);
-export const units = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+// Shared limits apply to new/renamed records. Loading legacy names stays lossless.
+export const FIELD_LIMITS = { productName: 80, shopName: 60, accountName: 80, email: 254 } as const;
+export function nameError(value: string, limit: number, previous?: string) {
+  if (!value.trim()) return "Enter a name.";
+  if (value.trim().length > limit && value.trim() !== previous?.trim()) return `Use ${limit} characters or fewer.`;
+  return "";
+}
+export const count = (n: number) => new Intl.NumberFormat("en-ET", { maximumFractionDigits: 0 }).format(n);
+export const countLabel = (n: number, singular: string, plural = `${singular}s`) => `${count(n)} ${n === 1 ? singular : plural}`;
+const pluralUnits: Record<string, string> = { piece: "pieces", bottle: "bottles", bag: "bags", pack: "packs", bar: "bars", box: "boxes", carton: "cartons", litre: "litres", liter: "liters", loaf: "loaves", kg: "kg", g: "g", L: "L" };
+// Unknown imported labels are preserved instead of guessing an English plural.
+export const unitLabel = (n: number, unit: string) => n === 1 ? unit : pluralUnits[unit] ?? unit;
+export const money = (n: number | null) => n === null ? "Unavailable" : new Intl.NumberFormat("en-ET", { maximumFractionDigits: 2 }).format(n);
+export function salesTotal(sales: Pick<Sale, "total">[]): number | null {
+  let cents = 0;
+  for (const sale of sales) {
+    const next = Math.round(sale.total * 100);
+    if (!Number.isSafeInteger(next) || !Number.isSafeInteger(cents + next)) return null;
+    cents += next;
+  }
+  return cents / 100;
+}
+export function forecastSeries(values: number[] | null, snapshotAt?: string) {
+  const dated = !!snapshotAt && Number.isFinite(Date.parse(snapshotAt));
+  return values?.map((quantity, i) => {
+    if (!dated) return { day: `Day ${i + 1}`, date: `Day ${i + 1}`, quantity };
+    const date = new Date(snapshotAt!);
+    date.setUTCDate(date.getUTCDate() + i + 1);
+    return { day: date.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Africa/Addis_Ababa" }), date: date.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Africa/Addis_Ababa" }), quantity };
+  });
+}
+export const units = (n: number, unit: string) => `${count(n)} ${unitLabel(n, unit)}`;
 export const demand = (p: Product) => p.forecast?.reduce((a, b) => a + b, 0) ?? null;
 export const restock = (p: Product) => Math.max(0, (demand(p) ?? 0) - p.stock);
 export const lowStock = (p: Product) => p.stock <= p.threshold;

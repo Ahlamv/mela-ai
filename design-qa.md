@@ -2,15 +2,13 @@
 
 ## Status
 
-New entry flow: illustrated stock/sales/restock introduction, logo entrance and handoff, sign-in/signup, labelled demo verification, password recovery and shop setup are implemented. Passwords exist only in component memory and are cleared on screen changes; no identity service or session is connected. Existing shops are preserved. Source checks and production build cover the implementation; current visual and interaction verification remains blocked by the same browser restriction. Earlier break-ui findings remain open.
+The requested break-ui follow-up has been implemented. See [current findings, fixes and evidence](docs/ux/qa/break-ui-fixes.md). Changes cover font sizes, long names, exact numeric layouts, count/unit copy, pagination, empty Forecasts, undated charts, legacy name compatibility, safe sales aggregates and development preview spacing/export isolation. Fifteen automated checks, TypeScript and production compilation pass.
 
-Follow-up font and edge case review: [break-ui findings](docs/ux/qa/break-ui-review.md). A development-only URL-persisted data switch now covers demo, worst-case, empty, one-item and 1,284-row states without overwriting saved shop data. Nine source findings are reported for review; design fixes await selection under the skill's report-before-fix rule. Current browser verification remains blocked.
+The illustrated Storyset tour and account UI remain a prototype; no identity/session service is connected. The complete supplied logo is rendered proportionally without cropping. Existing saved shops are preserved.
 
-Latest follow-up: Manrope replaces Inter, the generated logo is now applied, and navigation uses a persistent animated pill with fading labels and short screen entrances. Reduced-motion settings disable these transitions. Production build validation covers the changes; their visual appearance and animation timing still require browser inspection.
+**Current browser visual, keyboard and performance verification is pending.** The browser tool denied access to localhost earlier in this chat. No alternate browser or indirect page capture was used to bypass that restriction. The 320px/394px/500px and 200% zoom checks have not been completed visually.
 
-Code refinements and domain checks are complete. Final browser visual and interaction verification is blocked. The browser tool refused authority to inspect the open localhost page because its URL policy did not allow the current protocol. No alternate browser or indirect page capture was used to bypass that decision.
-
-Earlier QA is preserved at `docs/ux/qa/design-qa-before-refinement.md`. Its screenshots describe the previous implementation, not this revision.
+The earlier [break-ui report](docs/ux/qa/break-ui-review.md) and [design review](docs/ux/qa/design-qa-before-refinement.md) are retained as history. Their screenshots describe earlier implementations.
 
 ## Sources and evidence
 
@@ -26,14 +24,14 @@ Earlier QA is preserved at `docs/ux/qa/design-qa-before-refinement.md`. Its scre
 2. **Home/navigation:** consistent regular-weight icons, neutral tiles, opaque gray pill navigation, larger touch targets, and a first-product empty state. Low-stock shortcuts clear stale search terms.
 3. **Products:** field-associated errors; saved product details with Add another / Record sale actions; optional Uncategorized category. Editing cannot reinterpret stock units or alter historic sales.
 4. **Sales:** unsaved selection and quantity are guarded when changing tabs or opening history. In-flight saves block navigation. Out-of-stock selection offers Receive stock. Unsafe totals are rejected.
-5. **History:** saved product names, units and totals remain historical after edits. Long names and large amounts wrap.
+5. **History:** saved product names, units and totals remain historical after edits. Long names wrap; monetary amounts use a separate line and stay intact.
 6. **Receipts:** unsaved quantities are guarded; duplicate requests cannot apply stock twice; quantities and resulting stock are validated. Success waits for storage to succeed.
 7. **Forecasts:** no-history products cannot produce an all-covered banner. Covered products say no restock needed. Search persists when returning from details. Arithmetic explicitly clamps negative results to zero. New sample datasets have creation timestamps; old data states when the date is unavailable. Sample periods are not presented as freshly generated predictions.
 8. **Settings/recovery:** JSON backup export and explicit reset confirmation. Invalid records cannot silently be overwritten by transactions. Failed browser writes retain entries and do not produce success confirmation.
 
 ## Required design surfaces
 
-- **Typography:** uses locally bundled Manrope and the reference hierarchy; earlier work increased form/product/helper text sizes and wrapping. The latest review identifies remaining small labels and numeric layout risks.
+- **Typography:** uses locally bundled Manrope and the reference hierarchy; earlier work increased form/product/helper text sizes and wrapping. Functional styles now use at least 12px text, 14px product names and 16px form/search input text; full-width numeric layouts avoid splitting amounts.
 - **Spacing:** primary controls at least 48 CSS pixels; enlarged clear/dismiss/header controls; safe-area clearance for scrolling content.
 - **Color:** retained gray, white and burnt orange; replaced category rainbow tiles with neutral surfaces and restrained accent use.
 - **Icons/assets:** one regular-weight Phosphor family through shared context, with 24 px shortcuts, 22 px navigation, and 18–20 px action indicators. Product and forecast symbols replace generic lightning imagery. No new raster or handmade SVG icons.
@@ -44,7 +42,7 @@ These are implementation changes, pending visual confirmation.
 ## Checks
 
 - TypeScript passed during the revision; final production build also runs TypeScript validation.
-- Eight domain tests passed: sale/stock updates, retry safety, overselling/invalid quantities, numeric overflow, historical sales, product retry/no-history behavior, malformed storage, and nonnegative restock.
+- Eight domain tests and seven additional data/UI-source checks passed: sale/stock updates, retry safety, overselling/invalid quantities, numeric overflow, historical sales, product retry/no-history behavior, malformed storage, and nonnegative restock.
 - Browser rendering, keyboard focus, narrow layouts, screen-reader announcements, forms, and console logs remain unverified for this revision. No full accessibility compliance claim is made.
 
 ## Remaining acceptance checks

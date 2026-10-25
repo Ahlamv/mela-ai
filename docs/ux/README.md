@@ -39,3 +39,7 @@ The logo settles into the header on entry and moves toward the in-app brand posi
 `/onboarding`, `?onboarding=1` on page load, or the settings replay button reopens the flow. The dedicated route always opens the introduction, including after it was completed before. Preview chrome links directly to that route. Returning shops keep their product and sale data; onboarding completion is stored as a tour preference. Existing shops are never replaced through signup/setup. First-time empty-shop setup continues to the existing Add first product action.
 
 Editable diagram: [Mela AI Detailed App Flow and UX Handoff](https://lucid.app/lucidchart/32c6fc32-a9b1-4115-b7d1-6e820690deda/edit).
+
+## break-ui follow-up
+
+The user requested fixes to the prior font/edge-case findings. Lists now paginate at 40 rows after search/filtering. Product names wrap, exact amounts have their own space, functional text is at least 12px, and controls use 16px input text. Empty Forecasts links to Add first product; undated estimates use relative days. Name limits are shared for new data while old names remain lossless. See [the current verification report](qa/break-ui-fixes.md); browser layout, focus and performance confirmation remains pending.

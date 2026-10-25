@@ -5,7 +5,7 @@ export function recordSale(data: ShopData, productId: string, quantity: number, 
   const product = data.products.find(p => p.id === productId);
   if (!product) throw new Error("This product is no longer available. Choose another product.");
   if (!Number.isSafeInteger(quantity) || quantity <= 0) throw new Error("Enter a whole quantity greater than zero.");
-  if (quantity > product.stock) throw new Error(`Only ${product.stock} ${product.unit}${product.stock === 1 ? "" : "s"} available. Please update the quantity.`);
+  if (quantity > product.stock) throw new Error(`Only ${new Intl.NumberFormat("en-ET").format(product.stock)} in stock. Please update the quantity.`);
   const cents = Math.round(quantity * product.price * 100);
   if (!Number.isSafeInteger(cents)) throw new Error("This sale total is too large. Enter a smaller quantity.");
   return {
