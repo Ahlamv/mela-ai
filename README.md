@@ -15,6 +15,8 @@ Open http://localhost:3000. Node.js 20.9 or newer is required. No Flutter or Dar
 
 - Home, products, sales and forecasts with floating pill navigation.
 - First-use welcome, sample-shop exploration, or an empty local demo with a shop name.
+- Illustrated onboarding for stock, sales and restocking, with logo, product-card and stock-count motion; reduced-motion support.
+- Sign-in, account creation, demo email verification, password recovery and shop setup screens. These are UI flows; credentials are never stored or sent, and no authenticated session is created.
 - A consistent outlined icon family, neutral icon tiles and orange active accents.
 - Locally bundled Manrope, the supplied Mela AI logo, and animated pill navigation with reduced-motion support.
 - Search and filter by low-stock or out-of-stock status.
@@ -50,3 +52,11 @@ Run `npm test` with Node.js 22.18 or newer. See `design-qa.md` for current verif
 `npm run dev` shows a development-only data switch below the phone. Use `/?data=worst` for long names, non-Latin text, zero prices, large amounts and mixed stock states. Other values are `demo`, `empty`, `one` and `huge` (1,284 products and sales). Choose **Saved shop** to return to normal storage.
 
 Fixture edits are temporary and never overwrite the saved shop. The selected dataset survives a page reload in the URL; switching datasets resets temporary edits. The switch and fixture module are excluded from the production page. See [the font and break-ui review](docs/ux/qa/break-ui-review.md) for findings and proposed fixes. Browser verification remains pending.
+
+## Onboarding and account preview
+
+Open `/?onboarding=1` to replay the introduction, or choose **Welcome tour & account screens** in shop settings. New visitors see the tour automatically; existing saved shops see it once after this update. Completing the tour stores a preference separately from shop data. It is not an authentication session.
+
+The account screens use example details and the visibly labelled verification code `123456`. Sign-in opens an existing local demo, or continues to shop setup when none exists. Creating an account or resetting a password previews those interactions without sending email or creating credentials. Existing shop records are preserved throughout. Provider choice, email/phone identity and shop access control still need backend agreement.
+
+The three [generated illustrations and prompts](docs/ux/onboarding-assets.md) are included in the repository. Browser rendering and animation timing remain unverified because of the existing browser access restriction.

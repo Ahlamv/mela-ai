@@ -18,6 +18,7 @@ import {
 } from "@/lib/demo-data";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { EntryFlow } from "@/components/entry-flow";
 import { recordSale, recordReceipt, saveProductDetails } from "@/lib/shop-actions";
 
 type Tab = "home" | "products" | "sales" | "forecasts";
@@ -38,6 +39,7 @@ function useDraftGuard(dirty: boolean, saving: boolean, onChange: DraftChange) {
 }
 
 const STORAGE_KEY = "mela-ai-demo-v1";
+const ONBOARDING_KEY = "mela-ai-introduction-v1";
 const initialRoute: Route = { tab: "home", screen: "main" };
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const iconMap: Record<Product["icon"], Icon> = { oil: Drop, sugar: Bag, coffee: Coffee, soap: HandSoap, rice: BowlFood, teff: Grains, pasta: Plant, water: Drop, box: Cube };
@@ -77,6 +79,7 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
   const dataRef = useRef(data);
   const [ready, setReady] = useState(false);
   const [welcome, setWelcome] = useState(false);
+  const [hasSavedShop, setHasSavedShop] = useState(false);
   const [forecastSearch, setForecastSearch] = useState("");
   const [previewScale, setPreviewScale] = useState(1);
   const [route, setRoute] = useState<Route>(initialRoute);
@@ -104,12 +107,13 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
   useEffect(() => {
     // Review fixtures are isolated from the owner's saved shop.
     if (previewData) { setReady(true); return () => { if (toastRef.current) clearTimeout(toastRef.current); }; }
+    const replayIntroduction = new URLSearchParams(window.location.search).get("onboarding") === "1";
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         let value: unknown;
         try { value = JSON.parse(saved); } catch { value = null; }
-        if (isShopData(value)) { dataRef.current = value; setData(value); }
+        if (isShopData(value)) { dataRef.current = value; setData(value); setHasSavedShop(true); setWelcome(replayIntroduction || localStorage.getItem(ONBOARDING_KEY) !== "complete"); }
         else { corruptStorage.current = true; setStorageWarning("Your saved shop could not be read. It has not been overwritten. Export a backup from shop settings before starting again."); }
       } else { setWelcome(true); }
     } catch { setStorageWarning("Browser storage is unavailable. Changes cannot be saved until storage is enabled."); }
@@ -160,7 +164,15 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
   function closeDiscard() { setPendingNavigation(null); requestAnimationFrame(() => returnFocus.current?.focus()); }
   function beginDemo(empty: boolean, name: string) {
     commit(empty ? { products: [], sales: [], receipts: [], shopName: name.trim() || "My shop" } : createDemoData());
-    setWelcome(false); setRoute(initialRoute);
+    setHasSavedShop(true); finishIntroduction();
+  }
+  function finishIntroduction() {
+    // The marker is a tour preference, never an authenticated session.
+    if (!previewData) { try { localStorage.setItem(ONBOARDING_KEY, "complete"); } catch { /* The app can still open when a tour preference cannot be saved. */ } }
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("onboarding")) { url.searchParams.delete("onboarding"); window.history.replaceState(null, "", url); }
+    setWelcome(false); setRoute(initialRoute); setHistory([]);
+    requestAnimationFrame(() => { const heading = scrollRef.current?.querySelector<HTMLElement>("h1"); if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); } });
   }
 
   const product = data.products.find(p => p.id === route.productId);
@@ -246,12 +258,12 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
           {(route.screen === "add" || route.screen === "edit") && <ProductForm key={route.screen + (product?.id ?? "new")} product={route.screen === "edit" ? product : undefined} onSave={saveProduct} onCancel={() => { dirtyForm.current = false; back(); }} onDirtyChange={onDraftChange} />}
           {route.screen === "receive" && product && <ReceiveForm onDraftChange={onDraftChange} product={product} onSave={receiveStock} onCancel={back} />}
           {route.screen === "forecast" && product && <ForecastDetail snapshotAt={data.forecastCreatedAt} product={product} onReceive={() => go({ tab: "products", screen: "receive", productId: product.id })} onRecord={() => openSale(product)} onProduct={() => go({ tab: "products", screen: "product", productId: product.id })} />}
-          {route.screen === "settings" && <DemoSettings shopName={data.shopName ?? "Selam Mini Market"} data={data} onReset={() => { commit(createDemoData(), true); setProductSearch(""); setForecastSearch(""); setStockFilter("All"); setSalesMode("record"); chooseTab("home"); toast("Demo shop reset to its starting stock"); }} />}
+          {route.screen === "settings" && <DemoSettings onTour={() => setWelcome(true)} shopName={data.shopName ?? "Selam Mini Market"} data={data} onReset={() => { commit(createDemoData(), true); setProductSearch(""); setForecastSearch(""); setStockFilter("All"); setSalesMode("record"); chooseTab("home"); toast("Demo shop reset to its starting stock"); }} />}
         </>}
       </div>
       {ready && <nav className="bottom-nav" style={{ "--active-tab": navItems.findIndex(item => item.id === route.tab) } as CSSProperties} inert={!!pendingNavigation || welcome} aria-label="Main navigation">{navItems.map(({ id, label, icon: Mark }) => <button key={id} aria-current={route.tab === id ? "page" : undefined} aria-label={label} className={route.tab === id ? "active" : ""} onClick={() => chooseTab(id)}><Mark size={22} weight="regular" /><span>{label}</span></button>)}</nav>}
       {notice && <div className="toast" role="status"><CheckCircle size={19} />{notice}<button aria-label="Dismiss notification" onClick={() => setNotice("")}><X size={16} /></button></div>}
-      {welcome && ready && <Welcome onBegin={beginDemo} />}
+      {welcome && ready && <EntryFlow hasSavedShop={hasSavedShop || !!previewData} onBegin={beginDemo} onContinue={finishIntroduction} />}
       {pendingNavigation && <div className="dialog-scrim"><section className="discard-dialog" role="alertdialog" aria-modal="true" aria-labelledby="discard-title" onKeyDown={e => { if (e.key === "Escape") closeDiscard(); if (e.key === "Tab") { const buttons = e.currentTarget.querySelectorAll<HTMLButtonElement>("button"); const first = buttons[0]; const last = buttons[buttons.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); } } }}><span className="form-icon"><Package size={26} /></span><h2 id="discard-title">Keep your changes?</h2><p>Your entries haven’t been saved yet.</p><button className="button primary full" autoFocus onClick={closeDiscard}>Keep editing</button><button className="button white full" onClick={() => { dirtyForm.current = false; setPendingNavigation(null); pendingNavigation(); }}>Discard changes</button></section></div>}
     </section></div>
     <p className="preview-note">A working preview. A sample shop. Make yourself at home.</p>
@@ -372,7 +384,7 @@ function ForecastDetail({ product: p, onReceive, onRecord, onProduct, snapshotAt
   </>}</>;
 }
 
-function DemoSettings({ onReset, shopName, data }: { onReset: () => void; shopName: string; data: ShopData }) {
+function DemoSettings({ onReset, onTour, shopName, data }: { onReset: () => void; onTour: () => void; shopName: string; data: ShopData }) {
   const [confirm, setConfirm] = useState(false);
   const [error, setError] = useState("");
   function reset() { try { onReset(); } catch (e) { setError(e instanceof Error ? e.message : "Could not reset. Try again."); } }
@@ -383,33 +395,5 @@ function DemoSettings({ onReset, shopName, data }: { onReset: () => void; shopNa
     const link = document.createElement("a"); link.href = url; link.download = "mela-ai-shop-backup.json"; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-  return <><div className="form-intro"><span className="form-icon"><Storefront size={28} /></span><h2>{shopName}</h2><p>A sample shop to make yourself at home in.</p></div><div className="settings-list"><div><span>Currency</span><strong>Ethiopian birr · ETB</strong></div><div><span>Language</span><strong>English</strong></div><div><span>Data</span><strong>Local demo records</strong></div><div><span>Forecasts</span><strong>Illustrative estimates</strong></div></div><p className="settings-description">Add products, record sales, and receive stock. Your demo changes stay in this browser. Real accounts, payments, and a trained forecast service aren’t connected.</p><button className="button white full" onClick={exportShop}>Export shop backup<ArrowDown size={18} /></button><button className="button subtle full" onClick={() => setConfirm(true)}><ArrowClockwise size={19} />Reset demo shop</button>{confirm && <div className="inline-confirm" role="alert"><strong>Start fresh?</strong><p>This clears your local demo changes and restores the sample shop.</p><div><button className="button white" onClick={() => setConfirm(false)}>Keep my changes</button><button className="button primary" onClick={reset}>Reset demo</button></div></div>}{error && <p className="field-error" role="alert">{error}</p>}<p className="sample-footnote">Mela AI · A little clarity for your everyday shop.</p></>;
-}
-
-
-function Welcome({ onBegin }: { onBegin: (empty: boolean, name: string) => void }) {
-  const [setup, setSetup] = useState(false);
-  const welcomeRef = useRef<HTMLElement>(null);
-  useEffect(() => { const heading = welcomeRef.current?.querySelector<HTMLElement>("h1"); if (heading) { heading.tabIndex = -1; heading.focus(); } }, []);
-  const [name, setName] = useState("");
-  const [error, setError] = useState("");
-  function begin(empty: boolean) {
-    if (empty && !name.trim()) { setError("Enter your shop’s name."); return; }
-    try { onBegin(empty, name); } catch (e) { setError(e instanceof Error ? e.message : "Could not start. Please retry."); }
-  }
-  return <section ref={welcomeRef} className="welcome-screen" aria-label="Welcome to Mela AI">
-    <BrandLogo />
-    <div className="welcome-symbol"><Storefront size={42} /></div>
-    <p className="eyebrow">A LITTLE CLARITY, EVERY DAY</p>
-    <h1>{setup ? "Make it your shop." : <>Your shop.<br />One clear view.</>}</h1>
-    <p>Know what’s in stock, record each sale, and plan what to restock.</p>
-    {setup ? <form onSubmit={e => { e.preventDefault(); begin(true); }} noValidate>
-      <label className="form-field">Shop name<input autoFocus value={name} maxLength={60} onChange={e => { setName(e.target.value); setError(""); }} placeholder="e.g. Selam Mini Market" aria-invalid={!!error} aria-describedby={error ? "welcome-error" : undefined} /></label>
-      <div className="setup-details"><span>Currency<strong>ETB · Ethiopian birr</strong></span><span>Language<strong>English</strong></span></div>
-      <button type="submit" className="button primary full">Create demo shop<ArrowRight size={18} /></button>
-      <button type="button" className="button subtle full" onClick={() => { setSetup(false); setError(""); }}>Go back</button>
-    </form> : <div className="welcome-actions"><button className="button primary full" onClick={() => begin(false)}>Explore sample shop<ArrowRight size={18} /></button><button className="button white full" onClick={() => setSetup(true)}>Start an empty demo<Plus size={18} /></button></div>}
-    {error && <p id="welcome-error" className="field-error" role="alert">{error}</p>}
-    <p className="sample-footnote">A local demo. Your changes stay in this browser.<br />Real shop accounts are not connected yet.</p>
-  </section>;
+  return <><div className="form-intro"><span className="form-icon"><Storefront size={28} /></span><h2>{shopName}</h2><p>A sample shop to make yourself at home in.</p></div><div className="settings-list"><div><span>Currency</span><strong>Ethiopian birr · ETB</strong></div><div><span>Language</span><strong>English</strong></div><div><span>Data</span><strong>Local demo records</strong></div><div><span>Forecasts</span><strong>Illustrative estimates</strong></div></div><p className="settings-description">Add products, record sales, and receive stock. Your demo changes stay in this browser. Real accounts, payments, and a trained forecast service aren’t connected.</p><button className="button white full" onClick={onTour}>Welcome tour &amp; account screens<ArrowRight size={18} /></button><button className="button white full" onClick={exportShop}>Export shop backup<ArrowDown size={18} /></button><button className="button subtle full" onClick={() => setConfirm(true)}><ArrowClockwise size={19} />Reset demo shop</button>{confirm && <div className="inline-confirm" role="alert"><strong>Start fresh?</strong><p>This clears your local demo changes and restores the sample shop.</p><div><button className="button white" onClick={() => setConfirm(false)}>Keep my changes</button><button className="button primary" onClick={reset}>Reset demo</button></div></div>}{error && <p className="field-error" role="alert">{error}</p>}<p className="sample-footnote">Mela AI · A little clarity for your everyday shop.</p></>;
 }

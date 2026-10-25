@@ -2,6 +2,8 @@
 
 ## Status
 
+New entry flow: illustrated stock/sales/restock introduction, logo entrance and handoff, sign-in/signup, labelled demo verification, password recovery and shop setup are implemented. Passwords exist only in component memory and are cleared on screen changes; no identity service or session is connected. Existing shops are preserved. Source checks and production build cover the implementation; current visual and interaction verification remains blocked by the same browser restriction. Earlier break-ui findings remain open.
+
 Follow-up font and edge case review: [break-ui findings](docs/ux/qa/break-ui-review.md). A development-only URL-persisted data switch now covers demo, worst-case, empty, one-item and 1,284-row states without overwriting saved shop data. Nine source findings are reported for review; design fixes await selection under the skill's report-before-fix rule. Current browser verification remains blocked.
 
 Latest follow-up: Manrope replaces Inter, the generated logo is now applied, and navigation uses a persistent animated pill with fading labels and short screen entrances. Reduced-motion settings disable these transitions. Production build validation covers the changes; their visual appearance and animation timing still require browser inspection.
