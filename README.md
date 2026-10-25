@@ -55,7 +55,7 @@ Fixture edits are temporary and never overwrite the saved shop. The selected dat
 
 ## Onboarding and account preview
 
-Open `/?onboarding=1` to replay the introduction, or choose **Welcome tour & account screens** in shop settings. New visitors see the tour automatically; existing saved shops see it once after this update. Completing the tour stores a preference separately from shop data. It is not an authentication session.
+Open `/onboarding` to replay the introduction, use the **Onboarding & sign in** preview link, or choose **Welcome tour & account screens** in shop settings. The earlier `/?onboarding=1` link also works on page load. New visitors see the tour automatically; existing saved shops see it once after this update. Completing the tour stores a preference separately from shop data. It is not an authentication session.
 
 The account screens use example details and the visibly labelled verification code `123456`. Sign-in opens an existing local demo, or continues to shop setup when none exists. Creating an account or resetting a password previews those interactions without sending email or creating credentials. Existing shop records are preserved throughout. Provider choice, email/phone identity and shop access control still need backend agreement.
 

@@ -27,7 +27,7 @@ export default function DevDataPreview() {
   return <div className={styles.preview}>
     <MelaApp key={selection.mode} previewData={selection.data} />
     <aside className={styles.toolbar} aria-label="Development data preview">
-      <p>Development preview · {selection.mode === "saved" ? "Uses your saved shop" : "Temporary data · edits reset when switching"}</p>
+      <p>Development preview · <a href="/onboarding">Open onboarding &amp; sign in</a></p>
       <div role="group" aria-label="Review dataset">{(["saved", ...reviewModes] as Mode[]).map(mode => <button key={mode} type="button" aria-pressed={mode === selection.mode} onClick={() => select(mode)}>{labels[mode]}</button>)}</div>
     </aside>
   </div>;

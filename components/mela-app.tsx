@@ -74,11 +74,11 @@ function ProductRow({ product, onClick, right }: { product: Product; onClick: ()
   return <button type="button" className="product-row" onClick={onClick}><ProductMark product={product} /><span className="product-copy"><strong>{product.name}</strong><span>ETB {money(product.price)} <span className="muted">/ {product.unit}</span></span></span><span className="product-end">{right ?? <><strong>{product.stock} <small>left</small></strong><StockStatus product={product} /></>}</span><CaretRight size={15} className="row-chevron" /></button>;
 }
 
-export default function MelaApp({ previewData }: { previewData?: ShopData } = {}) {
+export default function MelaApp({ previewData, forceOnboarding = false }: { previewData?: ShopData; forceOnboarding?: boolean } = {}) {
   const [data, setData] = useState<ShopData>(() => previewData ?? createDemoData());
   const dataRef = useRef(data);
   const [ready, setReady] = useState(false);
-  const [welcome, setWelcome] = useState(false);
+  const [welcome, setWelcome] = useState(forceOnboarding);
   const [hasSavedShop, setHasSavedShop] = useState(false);
   const [forecastSearch, setForecastSearch] = useState("");
   const [previewScale, setPreviewScale] = useState(1);
@@ -105,9 +105,10 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
   }, []);
 
   useEffect(() => {
+    const replayIntroduction = forceOnboarding || new URLSearchParams(window.location.search).get("onboarding") === "1";
+    if (replayIntroduction) setWelcome(true);
     // Review fixtures are isolated from the owner's saved shop.
     if (previewData) { setReady(true); return () => { if (toastRef.current) clearTimeout(toastRef.current); }; }
-    const replayIntroduction = new URLSearchParams(window.location.search).get("onboarding") === "1";
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -119,7 +120,7 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
     } catch { setStorageWarning("Browser storage is unavailable. Changes cannot be saved until storage is enabled."); }
     setReady(true);
     return () => { if (toastRef.current) clearTimeout(toastRef.current); };
-  }, [previewData]);
+  }, [previewData, forceOnboarding]);
 
   function commit(next: ShopData, reset = false) {
     if (previewData) { dataRef.current = next; setData(next); return; }
@@ -211,7 +212,7 @@ export default function MelaApp({ previewData }: { previewData?: ShopData } = {}
   const screenNames: Record<Exclude<Screen, "main">, string> = { product: "Product details", add: "Add product", edit: "Edit product", receive: "Receive stock", forecast: "Demand & restock", settings: "Your demo shop" };
 
   return <IconContext.Provider value={ICON_STYLE}><main className="preview-stage" style={{ "--preview-scale": previewScale } as CSSProperties}>
-    <div className="preview-caption"><BrandLogo /><span>YOUR SHOP, A LITTLE CLEARER</span></div>
+    <div className="preview-caption"><BrandLogo /><a className="onboarding-preview-link" href="/onboarding">Onboarding &amp; sign in <ArrowRight size={15} /></a></div>
     <div className="phone-stage"><section className="phone-frame" aria-label="Mela AI mobile app prototype">
       <div className="status-bar" aria-hidden="true"><span>9:41</span><span><CellSignalFull size={17} /><WifiHigh size={17} /><BatteryFull size={23} /></span></div>
       <div key={`${route.tab}:${route.screen}:${route.productId ?? ""}`} className="app-scroll screen-enter" inert={!!pendingNavigation || welcome} ref={scrollRef} data-testid="app-viewport">

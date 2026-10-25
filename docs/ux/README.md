@@ -36,6 +36,6 @@ The new entry flow introduces stock, sales and restocking in three illustrated p
 
 The logo settles into the header on entry and moves toward the in-app brand position on completion. The sales illustration changes a stock card from 12 to 11 bottles. Transitions use transform/opacity and honor reduced-motion preferences. All inputs use 16px text and supporting text is at least 12px.
 
-`?onboarding=1` or the settings replay button reopens the flow. Returning shops keep their product and sale data; onboarding completion is stored as a tour preference. Existing shops are never replaced through signup/setup. First-time empty-shop setup continues to the existing Add first product action.
+`/onboarding`, `?onboarding=1` on page load, or the settings replay button reopens the flow. The dedicated route always opens the introduction, including after it was completed before. Preview chrome links directly to that route. Returning shops keep their product and sale data; onboarding completion is stored as a tour preference. Existing shops are never replaced through signup/setup. First-time empty-shop setup continues to the existing Add first product action.
 
 Editable diagram: [Mela AI Detailed App Flow and UX Handoff](https://lucid.app/lucidchart/32c6fc32-a9b1-4115-b7d1-6e820690deda/edit).

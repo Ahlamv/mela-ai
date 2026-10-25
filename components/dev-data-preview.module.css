@@ -2,6 +2,7 @@
 .preview :global(.screen-enter) { animation: none; }
 .toolbar { position: fixed; z-index: 100; bottom: max(8px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 16px); padding: 8px; background: #e4e4e7; border: 1px solid #a1a1aa; border-radius: 14px; color: #27272a; font-family: system-ui, sans-serif; }
 .toolbar p { margin: 0 4px 6px; font-size: 12px; line-height: 1.5; }
+.toolbar p a { display: inline-flex; align-items: center; min-height: 36px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .toolbar > div { display: flex; flex-wrap: wrap; gap: 4px; }
 .toolbar button { flex: 1 0 auto; min-height: 36px; padding: 6px 10px; border-radius: 9px; font: 12px/1.5 system-ui, sans-serif; white-space: nowrap; }
 .toolbar button[aria-pressed="true"] { background: white; }

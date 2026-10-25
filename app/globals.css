@@ -36,6 +36,8 @@ svg { flex-shrink: 0; }
 .preview-caption { width: clamp(260px, calc(394px * var(--preview-scale, 1)), 394px); display: flex; align-items: center; justify-content: space-between; margin: 0 0 13px; padding: 0 5px; color: #5d5c59; }
 .phone-stage { width: calc(394px * var(--preview-scale, 1)); height: calc(846px * var(--preview-scale, 1)); }
 .preview-caption > span:last-child { font-size: 9px; font-weight: 500; letter-spacing: 1.6px; }
+.onboarding-preview-link { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; min-height: 48px; font-size: 12px; text-decoration: none; }
+.onboarding-preview-link:hover { color: var(--accent-dark); }
 .brand-word { font-size: 26px; letter-spacing: -1.8px; font-weight: 680; color: #252523; }
 .brand-word > span { color: var(--accent); margin-left: 3px; font-size: 15px; font-weight: 550; letter-spacing: -.5px; }
 .phone-frame { width: 394px; height: 846px; background: var(--background); border: 2px solid rgba(255,255,255,.95); border-radius: 45px; position: relative; overflow: hidden; isolation: isolate; box-shadow: 0 1px 0 rgba(255,255,255,.3) inset, 0 14px 36px rgba(71,66,57,.045); transform: scale(var(--preview-scale, 1)); transform-origin: top left; }
