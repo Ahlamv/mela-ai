@@ -2,7 +2,7 @@
 
 Asset: `mela-ai-logo-v1.png`
 
-Created with the built-in image generation tool on 25 October 2026. Transparent PNG used in the app header, welcome, loading state and desktop preview caption. The original logo artwork is preserved; its surrounding clear-space padding is framed with CSS.
+Created with the built-in image generation tool on 25 October 2026. Transparent PNG used in the app header, welcome, loading state and desktop preview caption. The file is identical to the user-supplied `/home/ahlumina/melaAI.png`. The complete image, including its original clear space, is rendered with `object-fit: contain` at its 3:1 canvas ratio. No enlargement, negative offset, or clipping is applied to the image. The onboarding animation transforms the whole logo container.
 
 ## Generation prompt
 
