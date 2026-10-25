@@ -59,4 +59,4 @@ Open `/onboarding` to replay the introduction, use the **Onboarding & sign in** 
 
 The account screens use example details and the visibly labelled verification code `123456`. Sign-in opens an existing local demo, or continues to shop setup when none exists. Creating an account or resetting a password previews those interactions without sending email or creating credentials. Existing shop records are preserved throughout. Provider choice, email/phone identity and shop access control still need backend agreement.
 
-The three [generated illustrations and prompts](docs/ux/onboarding-assets.md) are included in the repository. Browser rendering and animation timing remain unverified because of the existing browser access restriction.
+The three [Storyset Amico illustrations, source links and attribution details](docs/ux/onboarding-assets.md) are included in the repository. Browser rendering and animation timing remain unverified because of the existing browser access restriction.

@@ -16,11 +16,9 @@
 .splashStock > span:nth-child(3) { animation-delay: 260ms; }
 .splashContinue { display: flex; align-items: center; gap: 8px; margin-top: 30px; min-height: 48px; font-size: 13px; }
 .scene { animation: slide-arrive 450ms cubic-bezier(.22, 1, .36, 1) both; }
-.illustration { position: relative; margin: 2px -10px 0; height: 280px; isolation: isolate; }
-.illustration > img { width: 100%; height: 100%; object-fit: contain; display: block; mix-blend-mode: darken; animation: illustration-float 6s ease-in-out infinite; }
-.sceneTag { display: inline-flex; align-items: center; gap: 6px; position: absolute; top: 24px; left: 0; padding: 9px 12px; font-size: 12px; line-height: 1.5; color: #59564e; border-radius: 24px; background: #f9f8f5e8; border: 1px solid #fff; transform: rotate(-5deg); animation: tag-arrive 650ms 160ms cubic-bezier(.22, 1, .36, 1) both; }
-.sale .sceneTag { left: auto; right: 0; transform: rotate(5deg); }
-.stockCard { position: absolute; bottom: 8px; left: 8px; right: 8px; display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 23px; background: #fffffff5; box-shadow: 0 8px 20px #39352c08; border: 1px solid #fff; animation: metric-arrive 600ms 250ms cubic-bezier(.22, 1, .36, 1) both; }
+.illustration { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin: 2px 0 0; height: 280px; isolation: isolate; }
+.illustration > img { width: 100%; height: 100%; object-fit: contain; display: block; animation: illustration-float 6s ease-in-out infinite; }
+.stockCard { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 23px; background: #fffffff5; box-shadow: 0 8px 20px #39352c08; border: 1px solid #fff; animation: metric-arrive 600ms 250ms cubic-bezier(.22, 1, .36, 1) both; }
 .metricIcon { display: grid; place-items: center; width: 44px; height: 48px; background: #eeede9; border-radius: 15px; color: #6a655c; flex-shrink: 0; }
 .stockCard > span:nth-child(2) { min-width: 0; flex: 1; }
 .stockCard small { font-size: 12px; line-height: 1.5; color: #6b6861; display: block; margin-bottom: 4px; }
@@ -34,7 +32,9 @@
 .eyebrow { color: #77716b; font-size: 12px; font-weight: 600; line-height: 1.7; letter-spacing: 1px; }
 .tourCopy h1, .page h1 { margin-top: 12px; font-size: 36px; line-height: 1.08; letter-spacing: -1.6px; font-weight: 570; }
 .tourCopy > p:last-child { font-size: 14px; line-height: 1.7; color: #6a6660; margin: 15px auto 0; max-width: 310px; }
-.tourFooter { margin-top: 20px; }
+.tourFooter { margin-top: 20px; text-align: center; }
+.illustrationCredit { display: inline-flex; align-items: center; min-height: 28px; margin-top: 6px; color: #6a6660; font-size: 12px; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; }
+.illustrationCredit:hover { color: var(--accent-dark); }
 .dots { display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
 .dots button { width: 48px; height: 48px; display: grid; place-items: center; }
 .dots span { height: 5px; width: 5px; border-radius: 10px; background: #c9c6c1; transition: width 300ms cubic-bezier(.22, 1, .36, 1), background 300ms; }
@@ -77,7 +77,7 @@
 .textButton:hover { color: var(--accent-dark); }
 .actions { display: grid; gap: 12px; margin-top: 28px; }
 .accessArt { height: 222px; position: relative; margin: -20px 0 5px; }
-.accessArt img { display: block; height: 100%; width: 100%; object-fit: contain; mix-blend-mode: darken; }
+.accessArt img { display: block; height: 100%; width: 100%; object-fit: contain; }
 .accessArt > span { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; display: grid; place-items: center; color: var(--accent-dark); background: #faf9f5; border: 1px solid #fff; border-radius: 18px; }
 .page:has(.accessArt) { text-align: center; }
 .page:has(.accessArt) > .eyebrow { margin-top: 20px; }
@@ -101,7 +101,6 @@
 @keyframes stock-arrive { from { opacity: 0; transform: translate(-35px, 10px) rotate(-12deg); } to { opacity: 1; transform: translate(0) rotate(0); } }
 @keyframes slide-arrive { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes illustration-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes tag-arrive { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
 @keyframes metric-arrive { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes count-change { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes delta-arrive { to { opacity: 1; transform: translateY(0); } }
@@ -110,10 +109,9 @@
   .flow { padding-inline: 20px; }
   .illustration { height: 260px; }
   .tourCopy h1, .page h1 { font-size: 31px; letter-spacing: -1.3px; }
-  .stockCard { left: 0; right: 0; gap: 9px; padding: 12px; }
+  .stockCard { gap: 9px; padding: 12px; }
   .metricIcon { width: 38px; height: 43px; }
   .stockCard strong { font-size: 23px; }
-  .sceneTag { top: 12px; }
   .tourCopy { padding-top: 23px; }
   .eyebrow { letter-spacing: .9px; }
   .leaving .logoDock { transform: translate(-69px, 5px) scale(.68); }
