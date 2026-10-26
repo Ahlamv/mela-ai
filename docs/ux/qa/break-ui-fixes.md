@@ -12,7 +12,7 @@ The installed Emil Kowalski **break-ui** skill and its full worst-case catalog w
 
 2. **Broken, layout predicted: selected product text displaced the status/action.** Worst value: `LaundryDetergentConcentratedProfessionalRefillPack5Litres`. The selected text column now has `min-width: 0` and wrapping; badges cannot shrink and can move below the text. Product names use `dir="auto"` in lists, selected cards, history, detail and receipts. Fix: `app/globals.css:177`.
 
-3. **Fragile, source verified: essential labels were 8–11px, and desktop scaling shrank them further.** All explicit functional font sizes in the app and entry-flow styles are now at least 12px. Product names are 14px and form/search input text is 16px. Narrow rules no longer shrink those labels. Desktop uses native preview scale with page scrolling, rather than reducing the whole phone to fit a short window. Quick actions use two columns at ≤360px. Fix: `app/globals.css:389`; CSS-size regression check in `tests/ui-data.test.mjs`. These size checks do not prove visual readability or accessibility compliance.
+3. **Fragile, source verified: essential labels were 8–11px, and desktop scaling shrank them further.** All explicit functional font sizes in the app and entry-flow styles are now at least 12px. Product names are 14px and form/search input text is 16px. Narrow rules no longer shrink those labels. The 26 October follow-up keeps text at native size while adapting the phone frame to the available viewport height. Phone container queries reduce illustration height and spacing on short screens; long forms remain internally scrollable. Quick actions use two columns at ≤360px. Fix: `app/globals.css:389`; CSS-size regression check in `tests/ui-data.test.mjs`. These size checks do not prove visual readability or accessibility compliance.
 
 4. **Ugly, execution verified: singular counts and imported units were wrong.** `1 products`, `1 sales recorded`, `1 records`, and `2 boxs` are corrected using shared count and unit helpers. Counts are grouped, such as `1,284`; known stock units have explicit plurals. Unknown imported labels are preserved rather than guessed. Fix: `lib/demo-data.ts:53`. Tests exercise zero, one, large counts, boxes, invariant `kg`, imported labels and floating-point money tails.
 
@@ -28,7 +28,7 @@ The installed Emil Kowalski **break-ui** skill and its full worst-case catalog w
 
 10. **Broken, execution verified: combined sales totals could exceed safe cents.** Aggregates now sum integer cents and stop at the safe-integer boundary. Unsupported totals show Unavailable with explanatory copy; individual saved sales remain listed. Fix: `lib/demo-data.ts:59`. Tests cover 0.1 + 0.2 and overflowing aggregates.
 
-11. **Fragile, source verified: review chrome assumed a fixed toolbar height.** The development toolbar now reports its actual height with a ResizeObserver; mobile phone height reserves that space. The toolbar has a maximum height and can scroll, so wrapped controls do not hide navigation. Fix: `components/dev-data-preview.tsx:33`. This is development chrome; production has none. Browser reflow verification is pending.
+11. **Fragile, source verified: review chrome assumed a fixed toolbar height.** The development toolbar now reports its actual height with a ResizeObserver; the phone stage reserves that space at desktop and mobile widths. The toolbar has a maximum height and can scroll, so wrapped controls do not hide navigation. Fix: `components/dev-data-preview.tsx:33`. This is development chrome; production has none. Browser reflow verification is pending.
 
 12. **Broken, source verified: exporting a fixture could read the owner's saved shop.** Settings export now skips saved local storage in fixture mode and exports the current temporary data. Normal recovery export still preserves raw unreadable saved data. Fix: `components/mela-app.tsx:397`.
 
@@ -61,3 +61,11 @@ The supplied PNG logo also retains the earlier complete-image fix: no zoom, nega
 ## Still pending in an allowed browser
 
 Capture Demo and Worst case at 320px, 394px and 500px, then the desktop canvas, and repeat at 200% zoom. Flip every fixture and all four tabs, select long product names, enter large sale/receipt quantities, traverse pagination across a search change, inspect the full logo and all three illustrations, test account errors and keyboard focus, check safe-area clearance, and measure 1,284-row filtering/scrolling on a target phone. The code checks above do not replace those checks.
+
+## 26 October — preview fit follow-up
+
+The user reported that the fixed 846px phone was too large for the screen after automatic scaling was removed. The preview now uses a viewport-height grid, caps the phone at 846px, and reserves the actual development toolbar height. Short desktop windows omit the outer caption and note. Mobile fills the available viewport without the decorative frame.
+
+The phone is a named size container. Onboarding responds to its actual height, including on desktop: smaller illustration regions, tighter spacing, a shared footer row for Sign in and Storyset attribution, and less whitespace on account screens. The supplied logo remains complete and proportional; its entrance travel responds to the phone height. Text stays at native scale, inputs remain 16px, and action targets retain their existing sizes. Very short windows, large text and long forms can scroll inside the phone.
+
+TypeScript and the production build passed for this revision. Browser screenshots, animation playback and viewport/zoom interaction checks remain pending under the previously reported browser restriction.

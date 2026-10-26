@@ -6,8 +6,7 @@
 .toolbar > div { display: flex; flex-wrap: wrap; gap: 4px; }
 .toolbar button { flex: 1 0 auto; min-height: 36px; padding: 6px 10px; border-radius: 9px; font: 12px/1.5 system-ui, sans-serif; white-space: nowrap; }
 .toolbar button[aria-pressed="true"] { background: white; }
-/* Reserve space for the review chrome without hiding the app's navigation. */
+/* The shared preview stage reserves the measured toolbar height. */
 @media (max-width: 500px) {
-  .preview :global(.phone-stage), .preview :global(.phone-frame) { height: max(200px, calc(100dvh - var(--review-toolbar-height))); }
   .toolbar { width: calc(100% - 16px); }
 }

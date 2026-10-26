@@ -150,7 +150,7 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue, initialValues }: 
       <footer className={styles.tourFooter}>
         <div className={styles.dots} role="group" aria-label="Onboarding pages">{slides.map((_, i) => <button type="button" key={i} aria-label={`Page ${i + 1}: ${["Stock", "Sales", "Restocking"][i]}`} aria-current={step === i ? "step" : undefined} onClick={() => setStep(i)}><span /></button>)}</div>
         <button type="button" className={styles.primary} onClick={() => step < 2 ? setStep(s => s + 1) : changeStage("access")}>{step === 2 ? "Let’s get started" : "Continue"}<ArrowRight size={19} /></button>
-        <p>Already have an account? <button type="button" onClick={() => changeStage("signin")}>Sign in</button></p>
+        <p><span>Already have an account? </span><button type="button" onClick={() => changeStage("signin")}>Sign in</button></p>
         <a className={styles.illustrationCredit} href={`https://storyset.com/illustration/${slide.source}/amico`} target="_blank" rel="noreferrer">Illustrations by Storyset</a>
       </footer>
     </>}

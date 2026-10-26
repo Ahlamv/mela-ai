@@ -1,4 +1,4 @@
-# Mela AI refinement review — 25 October 2026
+# Mela AI refinement review — updated 26 October 2026
 
 ## Status
 
@@ -9,6 +9,10 @@ The illustrated Storyset tour and account UI remain a prototype; no identity/ses
 **Current browser visual, keyboard and performance verification is pending.** The browser tool denied access to localhost earlier in this chat. No alternate browser or indirect page capture was used to bypass that restriction. The 320px/394px/500px and 200% zoom checks have not been completed visually.
 
 The earlier [break-ui report](docs/ux/qa/break-ui-review.md) and [design review](docs/ux/qa/design-qa-before-refinement.md) are retained as history. Their screenshots describe earlier implementations.
+
+## Preview fit follow-up — 26 October
+
+The fixed-height phone now adapts to the viewport while keeping native text sizes. Onboarding illustration height, whitespace and footer layout respond to the phone container height. Long forms remain scrollable inside the frame. Desktop and mobile reserve the measured development toolbar space. The supplied logo and Storyset attribution are preserved. TypeScript and production compilation passed; visual verification remains pending.
 
 ## Sources and evidence
 

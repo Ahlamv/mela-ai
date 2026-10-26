@@ -210,7 +210,7 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
 
   const screenNames: Record<Exclude<Screen, "main">, string> = { product: "Product details", add: "Add product", edit: "Edit product", receive: "Receive stock", forecast: "Demand & restock", settings: "Your demo shop" };
 
-  return <IconContext.Provider value={ICON_STYLE}><main className="preview-stage" style={{ "--preview-scale": 1 } as CSSProperties}>
+  return <IconContext.Provider value={ICON_STYLE}><main className="preview-stage">
     <div className="preview-caption"><BrandLogo /><a className="onboarding-preview-link" href="/onboarding">Onboarding &amp; sign in <ArrowRight size={15} /></a></div>
     <div className="phone-stage"><section className="phone-frame" aria-label="Mela AI mobile app prototype">
       <div className="status-bar" aria-hidden="true"><span>9:41</span><span><CellSignalFull size={17} /><WifiHigh size={17} /><BatteryFull size={23} /></span></div>

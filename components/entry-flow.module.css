@@ -1,4 +1,4 @@
-.flow { position: absolute; inset: 43px 0 0; z-index: 30; background: var(--background); overflow-y: auto; overscroll-behavior: contain; padding: 8px 24px 28px; scrollbar-width: thin; color: var(--text); }
+.flow { --logo-travel: clamp(80px, 25cqh, 215px); position: absolute; inset: 43px 0 0; z-index: 30; background: var(--background); overflow-y: auto; overscroll-behavior: contain; padding: 8px 24px 28px; scrollbar-width: thin; color: var(--text); }
 .header { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; min-height: 64px; position: relative; }
 .header > div { min-width: 0; }
 .header > div:last-child { display: flex; justify-content: flex-end; }
@@ -7,7 +7,7 @@
 .back:hover { background: #ffffff70; }
 .skip { min-height: 48px; font-size: 12px; color: #5d5c58; padding: 0 0 0 10px; }
 .logoIntro { animation: logo-arrive 1650ms cubic-bezier(.22, 1, .36, 1) both; }
-.splash { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; padding: 270px 0 40px; min-height: 610px; }
+.splash { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; padding: clamp(90px, 24cqh, 210px) 0 20px; min-height: calc(100cqh - 140px); }
 .splash h1 { font-size: 34px; line-height: 1.12; font-weight: 570; letter-spacing: -1.6px; animation: quiet-arrive 700ms 500ms both; }
 .splash > p { font-size: 13px; line-height: 1.6; color: var(--muted); margin-top: 15px; animation: quiet-arrive 700ms 650ms both; }
 .splashStock { display: flex; gap: 12px; margin-bottom: 35px; }
@@ -96,7 +96,7 @@
 .leaving { pointer-events: none; }
 .leaving .page, .leaving .scene, .leaving .tourFooter { animation: none; opacity: 0; transform: translateY(-7px); transition: opacity 300ms, transform 480ms; }
 .leaving .logoDock { transform: translate(-87px, 5px) scale(.73); }
-@keyframes logo-arrive { 0% { opacity: 0; transform: translateY(215px) scale(1.7); } 20%, 47% { opacity: 1; transform: translateY(215px) scale(1.7); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes logo-arrive { 0% { opacity: 0; transform: translateY(var(--logo-travel)) scale(1.7); } 20%, 47% { opacity: 1; transform: translateY(var(--logo-travel)) scale(1.7); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes quiet-arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes stock-arrive { from { opacity: 0; transform: translate(-35px, 10px) rotate(-12deg); } to { opacity: 1; transform: translate(0) rotate(0); } }
 @keyframes slide-arrive { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
@@ -116,14 +116,58 @@
   .eyebrow { letter-spacing: .9px; }
   .leaving .logoDock { transform: translate(-69px, 5px) scale(.68); }
 }
-@media (max-height: 740px) and (max-width: 500px) {
+/* Respond to the actual phone height, including desktop preview chrome. */
+@container phone (max-height: 900px) {
+  .flow { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .header { min-height: 56px; }
   .illustration { height: 240px; }
-  .tourCopy { padding-top: 18px; }
-  .tourCopy > p:last-child { margin-top: 13px; }
-  .tourFooter { margin-top: 6px; }
-  .dots { margin-bottom: 6px; }
-  .page { padding-top: 18px; }
-  .accessArt { height: 180px; }
+  .tourCopy { padding-top: 14px; }
+  .tourCopy h1 { margin-top: 9px; font-size: 32px; }
+  .tourCopy > p:last-child { margin-top: 10px; line-height: 1.55; }
+  .tourFooter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; margin-top: 10px; }
+  .dots, .tourFooter > .primary { grid-column: 1 / -1; }
+  .dots { margin-bottom: 4px; }
+  .tourFooter > p { margin: 0; justify-self: start; }
+  .tourFooter > p > span { display: none; }
+  .tourFooter > .illustrationCredit { margin: 0; justify-self: end; text-align: right; }
+}
+@container phone (max-height: 740px) {
+  .header { min-height: 52px; }
+  .illustration { height: 210px; }
+  .page { padding-top: 16px; }
+  .accessArt { height: 170px; margin-top: -10px; }
+  .description { line-height: 1.6; margin-top: 12px; }
+  .actions { margin-top: 20px; gap: 10px; }
+}
+@container phone (max-height: 660px) {
+  .header { min-height: 48px; }
+  .illustration { height: clamp(100px, calc(100cqh - 490px), 170px); gap: 6px; }
+  .stockCard { padding: 10px 12px; gap: 10px; border-radius: 20px; }
+  .metricIcon { width: 38px; height: 40px; }
+  .stockCard strong { font-size: 23px; }
+  .stockCard small { margin-bottom: 2px; }
+  .tourCopy { padding-top: 10px; }
+  .tourCopy h1, .page h1 { font-size: 30px; }
+  .tourFooter { margin-top: 4px; }
+  .page, .authPage { padding-top: 8px; }
+  .accessArt { height: 120px; margin-top: 0; }
+  .page > .eyebrow, .page:has(.accessArt) > .eyebrow { margin-top: 10px; }
+  .authPage > .eyebrow { margin-top: 0; }
+  .form, .authPage .form { margin-top: 18px; gap: 14px; }
+  .field { gap: 6px; }
+  .demoNote { margin-top: 12px; }
+  .successPage { padding-top: 28px; }
+  .splashStock { margin-bottom: 20px; }
+  .splashContinue { margin-top: 16px; }
+}
+@container phone (max-height: 580px) {
+  .illustration { height: 100px; }
+  .tourCopy h1, .page h1 { font-size: 28px; letter-spacing: -1px; }
+  .tourCopy > p:last-child { margin-top: 8px; }
+  .tourCopy { padding-top: 8px; }
+  .accessArt { height: 100px; }
+  .actions { margin-top: 14px; gap: 8px; }
+  .splash h1 { font-size: 30px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .flow *, .flow *::before, .flow *::after { animation: none !important; transition: none !important; }
