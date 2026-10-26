@@ -96,7 +96,22 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
   const returnFocus = useRef<HTMLElement | null>(null);
   const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const toastRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const stage = previewRef.current;
+    if (!stage) return;
+    // Fit the preview around a fixed mobile canvas; don't reflow it into a short screen.
+    const fit = () => {
+      const scale = Math.min(1, stage.clientWidth / 394, stage.clientHeight / 846);
+      stage.style.setProperty("--preview-scale", String(Math.max(0, scale)));
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const replayIntroduction = forceOnboarding || new URLSearchParams(window.location.search).get("onboarding") === "1";
@@ -212,7 +227,7 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
 
   return <IconContext.Provider value={ICON_STYLE}><main className="preview-stage">
     <div className="preview-caption"><BrandLogo /><a className="onboarding-preview-link" href="/onboarding">Onboarding &amp; sign in <ArrowRight size={15} /></a></div>
-    <div className="phone-stage"><section className="phone-frame" aria-label="Mela AI mobile app prototype">
+    <div className="phone-stage" ref={previewRef}><section className="phone-frame" aria-label="Mela AI mobile app prototype">
       <div className="status-bar" aria-hidden="true"><span>9:41</span><span><CellSignalFull size={17} /><WifiHigh size={17} /><BatteryFull size={23} /></span></div>
       <div key={`${route.tab}:${route.screen}:${route.productId ?? ""}`} className="app-scroll screen-enter" inert={!!pendingNavigation || welcome} ref={scrollRef} data-testid="app-viewport">
         {!ready ? <div className="boot"><BrandLogo /><p>Getting your shop ready…</p></div> : <>

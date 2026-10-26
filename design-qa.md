@@ -12,7 +12,7 @@ The earlier [break-ui report](docs/ux/qa/break-ui-review.md) and [design review]
 
 ## Preview fit follow-up — 26 October
 
-The fixed-height phone now adapts to the viewport while keeping native text sizes. Onboarding illustration height, whitespace and footer layout respond to the phone container height. Long forms remain scrollable inside the frame. Desktop and mobile reserve the measured development toolbar space. The supplied logo and Storyset attribution are preserved. TypeScript and production compilation passed; visual verification remains pending.
+Following the user’s correction, desktop again uses the original 394 × 846 mobile canvas. A ResizeObserver scales the entire phone proportionally into the available preview space, preserving its portrait structure. It does not shorten the phone or trigger compact onboarding merely because the desktop window is short. Actual mobile viewports use their full available size without preview scaling. Long forms remain scrollable inside the frame, and development toolbar space stays reserved. The supplied logo and Storyset attribution are preserved. Visual verification remains pending.
 
 ## Sources and evidence
 
