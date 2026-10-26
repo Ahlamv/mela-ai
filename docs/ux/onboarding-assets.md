@@ -54,6 +54,8 @@ Each prompt used this shared template, substituting the corresponding subject be
 
 ## 26 October — onboarding layout refinement
 
-The desktop preview retains its original 394 × 846 portrait canvas and proportional fit. The main tour illustration region grows from 240px to 330px, increasing the artwork above its separate stock metric card. The heading and explanation start immediately after the compact logo header. Copy and footer have a 28px gap, followed by the page controls and an 8px gap before Continue. Sign in stays centered below the primary action. The enlarged illustration follows this upper text/action group with a 16px gap; its metric card stays in a separate row beneath the art. The account-entry illustration also grows to 260px and its extra top padding is removed. Short native viewports keep larger artwork and a minimum 20px separation before the tour actions, with scrolling when needed. No stock metric or illustration is clipped to force a fit.
+The user clarified the desired order: illustration first, then heading and explanation, then Continue. The desktop preview retains its original 394 × 846 portrait canvas and proportional fit. The illustration region remains 330px, with its stock metric card in a separate row. It starts 8px beneath the header. The copy follows with 24px of separation; the primary button follows the description with another 24px gap. Page controls and Sign in share a compact row below Continue, preserving their touch targets and leaving more space at the bottom. Short native viewports use 16–24px gaps and retain scrolling when needed.
+
+The account-entry illustration remains 260px and starts at the top of its content area.
 
 Onboarding credit labels have moved to Settings. Current browser appearance and animation playback remain pending because of the previously reported browser restriction.

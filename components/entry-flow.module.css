@@ -16,7 +16,7 @@
 .splashStock > span:nth-child(3) { animation-delay: 260ms; }
 .splashContinue { display: flex; align-items: center; gap: 8px; margin-top: 30px; min-height: 48px; font-size: 13px; }
 .scene { animation: slide-arrive 450ms cubic-bezier(.22, 1, .36, 1) both; }
-.illustration { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin: 16px 0 0; height: 330px; isolation: isolate; }
+.illustration { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin: 8px 0 0; height: 330px; isolation: isolate; }
 .illustration > img { width: 100%; height: 100%; object-fit: contain; display: block; animation: illustration-float 6s ease-in-out infinite; }
 .stockCard { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 23px; background: #fffffff5; box-shadow: 0 8px 20px #39352c08; border: 1px solid #fff; animation: metric-arrive 600ms 250ms cubic-bezier(.22, 1, .36, 1) both; }
 .metricIcon { display: grid; place-items: center; width: 44px; height: 48px; background: #eeede9; border-radius: 15px; color: #6a655c; flex-shrink: 0; }
@@ -28,12 +28,14 @@
 .metricCheck { color: var(--accent-dark); }
 .saleDelta { background: var(--accent-soft); color: var(--accent-dark); padding: 6px 10px; border-radius: 14px; font-size: 14px; font-weight: 650; opacity: 0; transform: translateY(-16px); }
 .stockChanged .saleDelta { animation: delta-arrive 550ms cubic-bezier(.22, 1, .36, 1) both; }
-.tourCopy { text-align: center; padding-top: 10px; }
+.tourCopy { text-align: center; padding-top: 24px; }
 .eyebrow { color: #77716b; font-size: 12px; font-weight: 600; line-height: 1.7; letter-spacing: 1px; }
 .tourCopy h1, .page h1 { margin-top: 12px; font-size: 36px; line-height: 1.08; letter-spacing: -1.6px; font-weight: 570; }
 .tourCopy > p:last-child { font-size: 14px; line-height: 1.7; color: #6a6660; margin: 15px auto 0; max-width: 310px; }
-.tourFooter { display: grid; justify-items: stretch; margin-top: 28px; text-align: center; }
-.dots { display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
+.tourFooter { display: grid; justify-items: stretch; margin-top: 24px; text-align: center; }
+.tourMeta { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 8px; }
+.tourSignIn { min-height: 48px; padding: 10px 8px; font-size: 12px; font-weight: 650; color: var(--text); }
+.dots { display: flex; align-items: center; }
 .dots button { width: 48px; height: 48px; display: grid; place-items: center; }
 .dots span { height: 5px; width: 5px; border-radius: 10px; background: #c9c6c1; transition: width 300ms cubic-bezier(.22, 1, .36, 1), background 300ms; }
 .dots button[aria-current="step"] span { width: 25px; background: var(--accent); }
@@ -42,8 +44,8 @@
 .primary:not(:disabled):hover { background: #a7422b; }
 .secondary { background: #fff; border: 1px solid #fff; color: #272622; }
 .secondary:hover { background: #f8f7f4; }
-.tourFooter > p, .switchPrompt { font-size: 12px; line-height: 1.7; text-align: center; color: #77716b; margin-top: 11px; }
-.tourFooter > p button, .switchPrompt button { min-height: 48px; font-size: 12px; font-weight: 650; color: var(--text); padding: 10px 4px; }
+.switchPrompt { font-size: 12px; line-height: 1.7; text-align: center; color: #77716b; margin-top: 11px; }
+.switchPrompt button { min-height: 48px; font-size: 12px; font-weight: 650; color: var(--text); padding: 10px 4px; }
 .page { padding-top: 29px; animation: quiet-arrive 350ms cubic-bezier(.22, 1, .36, 1) both; }
 .authPage { padding-top: 22px; }
 .authPage > .symbol { display: none; }
@@ -110,7 +112,7 @@
   .stockCard { gap: 9px; padding: 12px; }
   .metricIcon { width: 38px; height: 43px; }
   .stockCard strong { font-size: 23px; }
-  .tourCopy { padding-top: 10px; }
+  .tourCopy { padding-top: 24px; }
   .eyebrow { letter-spacing: .9px; }
   .leaving .logoDock { transform: translate(-69px, 5px) scale(.68); }
 }
@@ -119,12 +121,10 @@
   .flow { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
   .header { min-height: 52px; }
   .illustration { height: 330px; }
-  .tourCopy { padding-top: 10px; }
+  .tourCopy { padding-top: 24px; }
   .tourCopy h1 { margin-top: 9px; font-size: 32px; }
   .tourCopy > p:last-child { margin-top: 10px; line-height: 1.55; }
-  .tourFooter { margin-top: 28px; }
-  .dots { margin-bottom: 8px; }
-  .tourFooter > p { margin-top: 8px; }
+  .tourFooter { margin-top: 24px; }
 }
 @container phone (max-height: 740px) {
   .header { min-height: 52px; }
@@ -142,7 +142,7 @@
   .metricIcon { width: 38px; height: 40px; }
   .stockCard strong { font-size: 23px; }
   .stockCard small { margin-bottom: 2px; }
-  .tourCopy { padding-top: 10px; }
+  .tourCopy { padding-top: 16px; }
   .tourCopy h1, .page h1 { font-size: 30px; }
   .tourFooter { margin-top: 20px; }
   .page, .authPage { padding-top: 8px; }
@@ -160,7 +160,7 @@
   .illustration { height: 140px; }
   .tourCopy h1, .page h1 { font-size: 28px; letter-spacing: -1px; }
   .tourCopy > p:last-child { margin-top: 8px; }
-  .tourCopy { padding-top: 8px; }
+  .tourCopy { padding-top: 16px; }
   .accessArt { height: 140px; }
   .actions { margin-top: 14px; gap: 8px; }
   .splash h1 { font-size: 30px; }

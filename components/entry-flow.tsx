@@ -140,16 +140,18 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue, initialValues }: 
     </div>}
 
     {stage === "tour" && <div key={step} className={styles.scene}>
-        <div className={styles.tourCopy}><p className={styles.eyebrow}>{slide.eyebrow}</p><h1>{slide.title}</h1><p>{slide.description}</p></div>
+      <div className={styles.illustration}>
+        <Image src={`/onboarding/${slide.image}.svg`} alt="" width={500} height={500} unoptimized sizes="(max-width: 500px) 100vw, 350px" loading={step === 0 ? "eager" : "lazy"} />
+        <div className={`${styles.stockCard} ${stockMoved ? styles.stockChanged : ""}`} aria-hidden="true"><span className={styles.metricIcon}><Mark size={22} /></span><span><small>{slide.label}</small><strong key={stockMoved ? "after" : "before"}>{step === 1 && stockMoved ? "11" : slide.value}<span>{slide.unit}</span></strong></span>{step === 1 ? <span className={styles.saleDelta}>−1</span> : <CheckCircle size={22} className={styles.metricCheck} />}</div>
+      </div>
+      <div className={styles.tourCopy}><p className={styles.eyebrow}>{slide.eyebrow}</p><h1>{slide.title}</h1><p>{slide.description}</p></div>
       <footer className={styles.tourFooter}>
-        <div className={styles.dots} role="group" aria-label="Onboarding pages">{slides.map((_, i) => <button type="button" key={i} aria-label={`Page ${i + 1}: ${["Stock", "Sales", "Restocking"][i]}`} aria-current={step === i ? "step" : undefined} onClick={() => setStep(i)}><span /></button>)}</div>
         <button type="button" className={styles.primary} onClick={() => step < 2 ? setStep(s => s + 1) : changeStage("access")}>{step === 2 ? "Let’s get started" : "Continue"}<ArrowRight size={19} /></button>
-        <p><span>Already have an account? </span><button type="button" onClick={() => changeStage("signin")}>Sign in</button></p>
-      </footer>
-        <div className={styles.illustration}>
-          <Image src={`/onboarding/${slide.image}.svg`} alt="" width={500} height={500} unoptimized sizes="(max-width: 500px) 100vw, 350px" loading={step === 0 ? "eager" : "lazy"} />
-          <div className={`${styles.stockCard} ${stockMoved ? styles.stockChanged : ""}`} aria-hidden="true"><span className={styles.metricIcon}><Mark size={22} /></span><span><small>{slide.label}</small><strong key={stockMoved ? "after" : "before"}>{step === 1 && stockMoved ? "11" : slide.value}<span>{slide.unit}</span></strong></span>{step === 1 ? <span className={styles.saleDelta}>−1</span> : <CheckCircle size={22} className={styles.metricCheck} />}</div>
+        <div className={styles.tourMeta}>
+          <div className={styles.dots} role="group" aria-label="Onboarding pages">{slides.map((_, i) => <button type="button" key={i} aria-label={`Page ${i + 1}: ${["Stock", "Sales", "Restocking"][i]}`} aria-current={step === i ? "step" : undefined} onClick={() => setStep(i)}><span /></button>)}</div>
+          <button className={styles.tourSignIn} type="button" onClick={() => changeStage("signin")}>Sign in</button>
         </div>
+      </footer>
     </div>}
 
     {stage === "access" && <div className={styles.page} key="access">

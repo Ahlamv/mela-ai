@@ -16,7 +16,7 @@ Following the user’s correction, desktop again uses the original 394 × 846 mo
 
 ## Onboarding spacing follow-up — 26 October
 
-The tour artwork region is now 330px on the original portrait canvas, with a 28px separation between the explanatory copy and footer controls. Text and actions are now grouped beneath the compact header, followed by the enlarged illustration, with no vertical centering that pushes the controls down the screen. The account-entry artwork is larger too. The Storyset credit label has moved off the onboarding/account-entry screens into a visible Settings credits section with source links. Short native viewports keep scrolling available. Browser verification remains pending.
+The clarified tour order is **illustration → heading and description → Continue**. The artwork region remains 330px on the original portrait canvas. There is a 24px gap before the copy and another 24px before Continue; page controls and Sign in share one row beneath the button. All content starts at the top of the screen below the logo header. The enlarged account-entry artwork and Settings attribution remain. Short native viewports keep scrolling available. TypeScript and production compilation passed; browser verification remains pending.
 
 ## Profile and header follow-up — 26 October
 
