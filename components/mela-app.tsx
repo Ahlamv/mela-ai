@@ -13,33 +13,23 @@ import {
   ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 import {
-  createDemoData, count, countLabel, demand, FIELD_LIMITS, forecastSeries, isShopData, lowStock, money, nameError, restock, salesTotal as sumSales, statusText, unitLabel, units,
+  createDemoData, count, countLabel, demand, FIELD_LIMITS, forecastSeries, isShopData, isShopProfile, lowStock, money, nameError, restock, salesTotal as sumSales, statusText, unitLabel, units,
   type Category, type Product, type ShopData,
 } from "@/lib/demo-data";
 
 import { PaginatedList } from "@/components/paginated-list";
 import { BrandLogo } from "@/components/brand-logo";
 import { IllustrationCredits } from "@/components/illustration-credits";
+import { ProfileAvatar, ProfilePage, type ProfileUpdate } from "@/components/profile-page";
+import { useDraftGuard, type DraftChange } from "@/components/use-draft-guard";
 import { EntryFlow, type EntryPreviewData } from "@/components/entry-flow";
 import { recordSale, recordReceipt, saveProductDetails } from "@/lib/shop-actions";
 
 type Tab = "home" | "products" | "sales" | "forecasts";
-type Screen = "main" | "product" | "add" | "edit" | "receive" | "forecast" | "settings";
+type Screen = "main" | "product" | "add" | "edit" | "receive" | "forecast" | "profile" | "settings";
 type Route = { tab: Tab; screen: Screen; productId?: string; justAdded?: boolean };
 type StockFilter = "All" | "Low stock" | "Out of stock";
 const ICON_STYLE = { weight: "regular" as const, size: 20, "aria-hidden": true as const };
-type DraftChange = (dirty: boolean, saving?: boolean) => void;
-
-function useDraftGuard(dirty: boolean, saving: boolean, onChange: DraftChange) {
-  useEffect(() => { onChange(dirty, saving); return () => onChange(false, false); }, [dirty, saving, onChange]);
-  useEffect(() => {
-    if (!dirty && !saving) return;
-    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty, saving]);
-}
-
 const STORAGE_KEY = "mela-ai-demo-v1";
 const ONBOARDING_KEY = "mela-ai-introduction-v1";
 const initialRoute: Route = { tab: "home", screen: "main" };
@@ -140,6 +130,15 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
     dataRef.current = next; setData(next); corruptStorage.current = false; setStorageWarning("");
   }
 
+  function saveProfile(update: ProfileUpdate) {
+    const invalidName = nameError(update.shopName, FIELD_LIMITS.shopName, dataRef.current.shopName);
+    if (invalidName) throw new Error(invalidName);
+    if (!isShopProfile(update.profile)) throw new Error("Check your profile details and try again.");
+    commit({ ...dataRef.current, shopName: update.shopName, profile: update.profile });
+    onDraftChange(false);
+    toast("Profile updated");
+  }
+
   function toast(message: string) {
     setNotice(message);
     if (toastRef.current) clearTimeout(toastRef.current);
@@ -224,7 +223,7 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
     onDraftChange(false); back(); toast(`${units(quantity, p.unit)} added to stock`);
   }
 
-  const screenNames: Record<Exclude<Screen, "main">, string> = { product: "Product details", add: "Add product", edit: "Edit product", receive: "Receive stock", forecast: "Demand & restock", settings: "Your demo shop" };
+  const screenNames: Record<Exclude<Screen, "main">, string> = { product: "Product details", add: "Add product", edit: "Edit product", receive: "Receive stock", forecast: "Demand & restock", profile: "Your profile", settings: "Your demo shop" };
 
   return <IconContext.Provider value={ICON_STYLE}><main className="preview-stage">
     <div className="preview-caption"><BrandLogo /><a className="onboarding-preview-link" href="/onboarding">Onboarding &amp; sign in <ArrowRight size={15} /></a></div>
@@ -232,7 +231,7 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
       <div className="status-bar" aria-hidden="true"><span>9:41</span><span><CellSignalFull size={17} /><WifiHigh size={17} /><BatteryFull size={23} /></span></div>
       <div key={`${route.tab}:${route.screen}:${route.productId ?? ""}`} className="app-scroll screen-enter" inert={!!pendingNavigation || welcome} ref={scrollRef} data-testid="app-viewport">
         {!ready ? <div className="boot"><BrandLogo /><p>Getting your shop ready…</p></div> : <>
-          {subScreen ? <header className="sub-header"><button className="icon-button" onClick={back} aria-label="Go back"><ArrowLeft size={21} /></button><h1>{screenNames[route.screen as Exclude<Screen, "main">]}</h1><span className="tiny-demo">DEMO</span></header> : <header className="shop-header"><button className="shop-identity" onClick={() => go({ ...route, screen: "settings" })}><BrandLogo compact /><span className="shop-label"><span title={data.shopName ?? "Selam Mini Market"} dir="auto">{data.shopName ?? "Selam Mini Market"}</span><small><span className="demo-dot" />Demo shop</small></span></button><button className="icon-button bell-button" aria-label={`View ${countLabel(low.length, "low-stock product")}`} onClick={showLowStock}><Bell size={19} />{low.length > 0 && <span />}</button></header>}
+          {subScreen ? <header className="sub-header"><button className="icon-button" onClick={back} aria-label="Go back"><ArrowLeft size={21} /></button><h1>{screenNames[route.screen as Exclude<Screen, "main">]}</h1><span className="tiny-demo">{route.screen === "profile" ? "" : "DEMO"}</span></header> : <header className="shop-header"><BrandLogo compact /><div className="header-actions"><button className="icon-button bell-button" aria-label={`View ${countLabel(low.length, "low-stock product")}`} onClick={showLowStock}><Bell size={19} />{low.length > 0 && <span />}</button><button className="profile-button" type="button" aria-label="Open your profile" onClick={() => go({ ...route, screen: "profile" })}><ProfileAvatar photo={data.profile?.photo} /></button></div></header>}
 
           {storageWarning && <p className="storage-notice" role="status">{storageWarning}</p>}
 
@@ -274,6 +273,7 @@ export default function MelaApp({ previewData, forceOnboarding = false, entryPre
           {(route.screen === "add" || route.screen === "edit") && <ProductForm key={route.screen + (product?.id ?? "new")} product={route.screen === "edit" ? product : undefined} onSave={saveProduct} onCancel={() => { dirtyForm.current = false; back(); }} onDirtyChange={onDraftChange} />}
           {route.screen === "receive" && product && <ReceiveForm onDraftChange={onDraftChange} product={product} onSave={receiveStock} onCancel={back} />}
           {route.screen === "forecast" && product && <ForecastDetail snapshotAt={data.forecastCreatedAt} product={product} onReceive={() => go({ tab: "products", screen: "receive", productId: product.id })} onRecord={() => openSale(product)} onProduct={() => go({ tab: "products", screen: "product", productId: product.id })} />}
+          {route.screen === "profile" && <ProfilePage data={data} onSave={saveProfile} onDraftChange={onDraftChange} onSettings={() => go({ ...route, screen: "settings" })} />}
           {route.screen === "settings" && <DemoSettings preview={!!previewData} onTour={() => setWelcome(true)} shopName={data.shopName ?? "Selam Mini Market"} data={data} onReset={() => { commit(createDemoData(), true); setProductSearch(""); setForecastSearch(""); setStockFilter("All"); setSalesMode("record"); chooseTab("home"); toast("Demo shop reset to its starting stock"); }} />}
         </>}
       </div>

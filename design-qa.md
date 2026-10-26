@@ -18,6 +18,17 @@ Following the user’s correction, desktop again uses the original 394 × 846 mo
 
 The tour artwork region is now 330px on the original portrait canvas, with a 28px separation between the explanatory copy and footer controls. Text and actions are now grouped beneath the compact header, followed by the enlarged illustration, with no vertical centering that pushes the controls down the screen. The account-entry artwork is larger too. The Storyset credit label has moved off the onboarding/account-entry screens into a visible Settings credits section with source links. Short native viewports keep scrolling available. Browser verification remains pending.
 
+## Profile and header follow-up — 26 October
+
+- Replaced the two-line shop identity in the main header with the complete logo at left and notification/profile controls at right. The circular profile control uses the saved photo or a matching outline User icon. The header is 56px instead of its previous 82px minimum; heading/action spacing is tighter too.
+- Dismiss now has white text and a white outline. A darker orange fill preserves contrast with the small white label.
+- Added an editable profile screen for photo, name, email, phone, shop name and address. The settings screen remains accessible from Profile. Saves use the existing local shop persistence boundary and remain isolated in review-fixture mode.
+- Profile metadata is optional, so old saved shops still load. Its persisted structure and photo format/size are validated. Photos accept JPG/PNG/WebP up to 1 MB; failed previews fall back to the User icon. Form errors are associated with fields, and failed storage writes preserve the draft.
+- The existing unsaved-navigation/refresh guard is shared by profile and transaction forms. Personal fields are optional, the shop name is required, and existing long shop names can be kept unchanged.
+- Email is editable contact information; this does not change an authenticated account. Account/password services remain unconnected. Profiles are included in local backups and follow the existing explicit demo-reset behavior.
+
+TypeScript and production compilation passed. Browser rendering, avatar upload, reload persistence and keyboard interactions still require verification in an allowed browser; no new automated tests were run for this revision.
+
 ## Sources and evidence
 
 - Flow: `docs/ux/mela-ai-app-flow.pdf`.

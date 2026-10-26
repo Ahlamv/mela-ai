@@ -14,7 +14,8 @@ export type Product = {
 
 export type Sale = { id: string; productId: string; productName: string; quantity: number; unit: string; total: number; createdAt: string };
 export type StockReceipt = { id: string; productId: string; quantity: number; createdAt: string };
-export type ShopData = { products: Product[]; sales: Sale[]; receipts: StockReceipt[]; shopName?: string; forecastCreatedAt?: string };
+export type ShopProfile = { name: string; email: string; phone: string; address: string; photo?: string };
+export type ShopData = { products: Product[]; sales: Sale[]; receipts: StockReceipt[]; shopName?: string; forecastCreatedAt?: string; profile?: ShopProfile };
 
 export const demoProducts: Product[] = [
   { id: "oil", name: "Cooking oil · 1 L", price: 320, stock: 10, category: "Pantry", unit: "bottle", threshold: 12, icon: "oil", forecast: [4, 5, 5, 4, 6, 6, 5], forecastKind: "demo" },
@@ -44,7 +45,15 @@ export function createDemoData(): ShopData {
 }
 
 // Shared limits apply to new/renamed records. Loading legacy names stays lossless.
-export const FIELD_LIMITS = { productName: 80, shopName: 60, accountName: 80, email: 254 } as const;
+export const FIELD_LIMITS = { productName: 80, shopName: 60, accountName: 80, email: 254, phone: 32, address: 240 } as const;
+export function isShopProfile(value: unknown): value is ShopProfile {
+  if (!value || typeof value !== "object") return false;
+  const p = value as Record<string, unknown>;
+  const field = (value: unknown, limit: number) => typeof value === "string" && value.length <= limit;
+  return field(p.name, FIELD_LIMITS.accountName) && field(p.email, FIELD_LIMITS.email) &&
+    field(p.phone, FIELD_LIMITS.phone) && field(p.address, FIELD_LIMITS.address) &&
+    (p.photo === undefined || (typeof p.photo === "string" && p.photo.length <= 1_400_000 && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(p.photo)));
+}
 export function nameError(value: string, limit: number, previous?: string) {
   if (!value.trim()) return "Enter a name.";
   if (value.trim().length > limit && value.trim() !== previous?.trim()) return `Use ${limit} characters or fewer.`;
@@ -89,7 +98,7 @@ export function isShopData(value: unknown): value is ShopData {
   const amount = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v) && v >= 0 && Number.isSafeInteger(Math.round(v * 100));
   const date = (v: unknown) => text(v) && Number.isFinite(Date.parse(v));
   const unique = (items: Record<string, unknown>[]) => new Set(items.map(item => item.id)).size === items.length;
-  return (x.shopName === undefined || text(x.shopName)) && (x.forecastCreatedAt === undefined || date(x.forecastCreatedAt)) &&
+  return (x.shopName === undefined || text(x.shopName)) && (x.forecastCreatedAt === undefined || date(x.forecastCreatedAt)) && (x.profile === undefined || isShopProfile(x.profile)) &&
     Array.isArray(x.products) && x.products.every(p => record(p) && text(p.id) && text(p.name) && amount(p.price) && whole(p.stock) && whole(p.threshold) && text(p.unit) && ["Uncategorized", "Pantry", "Drinks", "Household"].includes(String(p.category)) && ["oil", "sugar", "coffee", "soap", "rice", "teff", "pasta", "water", "box"].includes(String(p.icon)) && ["demo", "baseline"].includes(String(p.forecastKind)) && (p.forecast === null || (Array.isArray(p.forecast) && p.forecast.length === 7 && p.forecast.every(whole) && Number.isSafeInteger(p.forecast.reduce((a, b) => a + b, 0))))) && unique(x.products) &&
     Array.isArray(x.sales) && x.sales.every(s => record(s) && text(s.id) && text(s.productId) && text(s.productName) && text(s.unit) && date(s.createdAt) && whole(s.quantity) && s.quantity > 0 && amount(s.total)) && unique(x.sales) &&
     Array.isArray(x.receipts) && x.receipts.every(r => record(r) && text(r.id) && text(r.productId) && whole(r.quantity) && r.quantity > 0 && date(r.createdAt)) && unique(x.receipts);

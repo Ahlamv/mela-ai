@@ -1,0 +1,28 @@
+.page { padding-top: 8px; }
+.hero { text-align: center; }
+.avatar { width: 84px; height: 84px; margin: 0 auto 20px; display: grid; place-items: center; border-radius: 50%; overflow: hidden; background: #e1dfda; color: #61594f; border: 3px solid #fff; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.hero h2 { margin: 8px 0 10px; font-size: 28px; line-height: 1.2; letter-spacing: -1px; font-weight: 570; overflow-wrap: anywhere; }
+.hero > p:not(:global(.eyebrow)) { font-size: 13px; line-height: 1.7; color: var(--muted); }
+.photoActions { display: flex; justify-content: center; gap: 16px; margin-top: 8px; }
+.photoActions button { min-height: 48px; padding: 8px; color: var(--accent-dark); font-size: 13px; font-weight: 600; }
+.hero > .photoHelp { font-size: 12px; }
+.form { display: grid; gap: 24px; margin-top: 28px; }
+.form fieldset { min-width: 0; margin: 0; padding: 20px 16px; border: 0; border-radius: 24px; background: #f4f3f0; }
+.form legend { float: left; width: 100%; padding: 0; margin-bottom: 18px; font-size: 16px; font-weight: 600; }
+.form legend + * { clear: both; }
+.hint { margin: -8px 0 18px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.form label { display: block; font-size: 13px; font-weight: 550; line-height: 1.6; }
+.form label + label { margin-top: 18px; }
+.form input, .form textarea { display: block; width: 100%; min-width: 0; min-height: 54px; padding: 14px; margin-top: 8px; border: 1px solid #fff; border-radius: 16px; background: #fff; color: var(--text); font: 450 16px/1.5 var(--font-manrope), sans-serif; }
+.form textarea { resize: vertical; }
+.form input:focus-visible, .form textarea:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+.form input[aria-invalid="true"] { border-color: var(--danger); }
+.optional { margin-left: 6px; font-size: 12px; font-weight: 400; color: var(--muted); }
+.error { display: block; margin-top: 8px; font-size: 12px; line-height: 1.7; color: var(--danger); }
+.saveNote { margin-top: -12px; padding-inline: 8px; font-size: 12px; line-height: 1.7; text-align: center; color: var(--muted); }
+.settingsLink { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 80px; padding: 16px; margin-top: 28px; border-radius: 22px; background: #fff; text-align: left; }
+.settingsLink > span { min-width: 0; }
+.settingsLink strong { display: block; font-size: 14px; font-weight: 600; }
+.settingsLink small { display: block; margin-top: 5px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.footer { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; font-size: 12px; line-height: 1.7; color: var(--muted); }
