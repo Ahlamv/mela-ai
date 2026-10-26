@@ -11,9 +11,9 @@ export type EntryPreviewData = { name: string; email: string; shopName: string }
 
 type Stage = "intro" | "tour" | "access" | "signin" | "signup" | "verify" | "forgot" | "reset" | "resetDone" | "setup";
 const slides = [
-  { image: "stock", source: "logistics", eyebrow: "01 / KNOW YOUR SHELVES", title: <>A place for every<br />little thing.</>, description: "Add your products and see what’s in stock. Your whole shop, in one clear view.", label: "Your stock, at a glance", value: "24", unit: "products on your shelves", icon: Package },
-  { image: "sale", source: "cash-payment", eyebrow: "02 / MAKE EVERY SALE COUNT", title: <>One sale. Less<br />to keep in mind.</>, description: "Record a sale in a few taps. Your stock updates with it, so you can get back to your customers.", label: "Cooking oil · 1 L", value: "12", unit: "bottles in stock", icon: Receipt },
-  { image: "forecast", source: "data-report", eyebrow: "03 / LOOK A LITTLE AHEAD", title: <>Tomorrow, with<br />a little more clarity.</>, description: "See what may sell next and what needs restocking. A helpful estimate. The final call is yours.", label: "A little preparation", value: "+18", unit: "bottles suggested to restock", icon: ChartLineUp },
+  { image: "stock", eyebrow: "01 / KNOW YOUR SHELVES", title: <>A place for every<br />little thing.</>, description: "Add your products and see what’s in stock. Your whole shop, in one clear view.", label: "Your stock, at a glance", value: "24", unit: "products on your shelves", icon: Package },
+  { image: "sale", eyebrow: "02 / MAKE EVERY SALE COUNT", title: <>One sale. Less<br />to keep in mind.</>, description: "Record a sale in a few taps. Your stock updates with it, so you can get back to your customers.", label: "Cooking oil · 1 L", value: "12", unit: "bottles in stock", icon: Receipt },
+  { image: "forecast", eyebrow: "03 / LOOK A LITTLE AHEAD", title: <>Tomorrow, with<br />a little more clarity.</>, description: "See what may sell next and what needs restocking. A helpful estimate. The final call is yours.", label: "A little preparation", value: "+18", unit: "bottles suggested to restock", icon: ChartLineUp },
 ];
 
 function PasswordField({ label = "Password", value, onChange, error, id, autoComplete = "current-password" }: { label?: string; value: string; onChange: (value: string) => void; error?: string; id: string; autoComplete?: "current-password" | "new-password" }) {
@@ -139,28 +139,24 @@ export function EntryFlow({ hasSavedShop, onBegin, onContinue, initialValues }: 
       <button type="button" className={styles.splashContinue} onClick={() => changeStage("tour")}>Let’s take a look <ArrowRight size={17} /></button>
     </div>}
 
-    {stage === "tour" && <>
-      <div key={step} className={styles.scene}>
-        <div className={styles.illustration}>
-          <Image src={`/onboarding/${slide.image}.svg`} alt="" width={500} height={500} unoptimized sizes="(max-width: 500px) 100vw, 350px" loading={step === 0 ? "eager" : "lazy"} />
-          <div className={`${styles.stockCard} ${stockMoved ? styles.stockChanged : ""}`} aria-hidden="true"><span className={styles.metricIcon}><Mark size={22} /></span><span><small>{slide.label}</small><strong key={stockMoved ? "after" : "before"}>{step === 1 && stockMoved ? "11" : slide.value}<span>{slide.unit}</span></strong></span>{step === 1 ? <span className={styles.saleDelta}>−1</span> : <CheckCircle size={22} className={styles.metricCheck} />}</div>
-        </div>
+    {stage === "tour" && <div key={step} className={styles.scene}>
         <div className={styles.tourCopy}><p className={styles.eyebrow}>{slide.eyebrow}</p><h1>{slide.title}</h1><p>{slide.description}</p></div>
-      </div>
       <footer className={styles.tourFooter}>
         <div className={styles.dots} role="group" aria-label="Onboarding pages">{slides.map((_, i) => <button type="button" key={i} aria-label={`Page ${i + 1}: ${["Stock", "Sales", "Restocking"][i]}`} aria-current={step === i ? "step" : undefined} onClick={() => setStep(i)}><span /></button>)}</div>
         <button type="button" className={styles.primary} onClick={() => step < 2 ? setStep(s => s + 1) : changeStage("access")}>{step === 2 ? "Let’s get started" : "Continue"}<ArrowRight size={19} /></button>
         <p><span>Already have an account? </span><button type="button" onClick={() => changeStage("signin")}>Sign in</button></p>
-        <a className={styles.illustrationCredit} href={`https://storyset.com/illustration/${slide.source}/amico`} target="_blank" rel="noreferrer">Illustrations by Storyset</a>
       </footer>
-    </>}
+        <div className={styles.illustration}>
+          <Image src={`/onboarding/${slide.image}.svg`} alt="" width={500} height={500} unoptimized sizes="(max-width: 500px) 100vw, 350px" loading={step === 0 ? "eager" : "lazy"} />
+          <div className={`${styles.stockCard} ${stockMoved ? styles.stockChanged : ""}`} aria-hidden="true"><span className={styles.metricIcon}><Mark size={22} /></span><span><small>{slide.label}</small><strong key={stockMoved ? "after" : "before"}>{step === 1 && stockMoved ? "11" : slide.value}<span>{slide.unit}</span></strong></span>{step === 1 ? <span className={styles.saleDelta}>−1</span> : <CheckCircle size={22} className={styles.metricCheck} />}</div>
+        </div>
+    </div>}
 
     {stage === "access" && <div className={styles.page} key="access">
       <div className={styles.accessArt}><Image src="/onboarding/stock.svg" alt="" width={500} height={500} unoptimized sizes="260px" /><span><Storefront size={22} /></span></div>
       <p className={styles.eyebrow}>A LITTLE CLARITY, EVERY DAY</p><h1>Your shop.<br />A fresh perspective.</h1><p className={styles.description}>A simpler way to look after the business you’re building.</p>
       <div className={styles.actions}><button type="button" className={styles.primary} onClick={() => changeStage("signup")}>Create an account<ArrowRight size={19} /></button><button type="button" className={styles.secondary} onClick={() => changeStage("signin")}>Sign in</button><button type="button" className={styles.textButton} onClick={explore} disabled={busy}>{hasSavedShop ? "Continue to my saved demo" : "Take a look around first"}<ArrowRight size={17} /></button></div>
       <p className={styles.demoNote}>You’re exploring a UI preview.<br />Account services aren’t connected yet.</p>
-      <a className={styles.illustrationCredit} href="https://storyset.com/illustration/logistics/amico" target="_blank" rel="noreferrer">Illustrations by Storyset</a>
     </div>}
 
     {auth && <div className={`${styles.page} ${styles.authPage}`} key={stage}>

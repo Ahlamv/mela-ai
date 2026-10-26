@@ -16,7 +16,7 @@
 .splashStock > span:nth-child(3) { animation-delay: 260ms; }
 .splashContinue { display: flex; align-items: center; gap: 8px; margin-top: 30px; min-height: 48px; font-size: 13px; }
 .scene { animation: slide-arrive 450ms cubic-bezier(.22, 1, .36, 1) both; }
-.illustration { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin: 2px 0 0; height: 280px; isolation: isolate; }
+.illustration { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; margin: 16px 0 0; height: 330px; isolation: isolate; }
 .illustration > img { width: 100%; height: 100%; object-fit: contain; display: block; animation: illustration-float 6s ease-in-out infinite; }
 .stockCard { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 23px; background: #fffffff5; box-shadow: 0 8px 20px #39352c08; border: 1px solid #fff; animation: metric-arrive 600ms 250ms cubic-bezier(.22, 1, .36, 1) both; }
 .metricIcon { display: grid; place-items: center; width: 44px; height: 48px; background: #eeede9; border-radius: 15px; color: #6a655c; flex-shrink: 0; }
@@ -28,13 +28,11 @@
 .metricCheck { color: var(--accent-dark); }
 .saleDelta { background: var(--accent-soft); color: var(--accent-dark); padding: 6px 10px; border-radius: 14px; font-size: 14px; font-weight: 650; opacity: 0; transform: translateY(-16px); }
 .stockChanged .saleDelta { animation: delta-arrive 550ms cubic-bezier(.22, 1, .36, 1) both; }
-.tourCopy { text-align: center; padding-top: 22px; }
+.tourCopy { text-align: center; padding-top: 10px; }
 .eyebrow { color: #77716b; font-size: 12px; font-weight: 600; line-height: 1.7; letter-spacing: 1px; }
 .tourCopy h1, .page h1 { margin-top: 12px; font-size: 36px; line-height: 1.08; letter-spacing: -1.6px; font-weight: 570; }
 .tourCopy > p:last-child { font-size: 14px; line-height: 1.7; color: #6a6660; margin: 15px auto 0; max-width: 310px; }
-.tourFooter { margin-top: 20px; text-align: center; }
-.illustrationCredit { display: inline-flex; align-items: center; min-height: 28px; margin-top: 6px; color: #6a6660; font-size: 12px; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; }
-.illustrationCredit:hover { color: var(--accent-dark); }
+.tourFooter { display: grid; justify-items: stretch; margin-top: 28px; text-align: center; }
 .dots { display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
 .dots button { width: 48px; height: 48px; display: grid; place-items: center; }
 .dots span { height: 5px; width: 5px; border-radius: 10px; background: #c9c6c1; transition: width 300ms cubic-bezier(.22, 1, .36, 1), background 300ms; }
@@ -76,10 +74,10 @@
 .textButton { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 48px; font-size: 13px; line-height: 1.6; padding: 12px 4px; width: 100%; color: #605b53; font-weight: 550; }
 .textButton:hover { color: var(--accent-dark); }
 .actions { display: grid; gap: 12px; margin-top: 28px; }
-.accessArt { height: 222px; position: relative; margin: -20px 0 5px; }
+.accessArt { height: 260px; position: relative; margin: 0 0 5px; }
 .accessArt img { display: block; height: 100%; width: 100%; object-fit: contain; }
 .accessArt > span { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; display: grid; place-items: center; color: var(--accent-dark); background: #faf9f5; border: 1px solid #fff; border-radius: 18px; }
-.page:has(.accessArt) { text-align: center; }
+.page:has(.accessArt) { text-align: center; padding-top: 0; }
 .page:has(.accessArt) > .eyebrow { margin-top: 20px; }
 .email { font-size: 14px; overflow-wrap: anywhere; color: #514c43; font-weight: 600; }
 .field > .code { text-align: center; font-size: 27px; font-weight: 550; letter-spacing: .35em; padding-left: calc(15px + .35em); font-variant-numeric: tabular-nums; }
@@ -107,50 +105,48 @@
 @media (max-width: 500px) { .flow { inset: 0; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(28px, env(safe-area-inset-bottom)); } }
 @media (max-width: 360px) {
   .flow { padding-inline: 20px; }
-  .illustration { height: 260px; }
+  .illustration { height: 310px; }
   .tourCopy h1, .page h1 { font-size: 31px; letter-spacing: -1.3px; }
   .stockCard { gap: 9px; padding: 12px; }
   .metricIcon { width: 38px; height: 43px; }
   .stockCard strong { font-size: 23px; }
-  .tourCopy { padding-top: 23px; }
+  .tourCopy { padding-top: 10px; }
   .eyebrow { letter-spacing: .9px; }
   .leaving .logoDock { transform: translate(-69px, 5px) scale(.68); }
 }
-/* Respond to the actual phone height, including desktop preview chrome. */
+/* Keep the tour at the top; leave space between the copy and its actions. */
 @container phone (max-height: 900px) {
   .flow { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-  .header { min-height: 56px; }
-  .illustration { height: 240px; }
-  .tourCopy { padding-top: 14px; }
+  .header { min-height: 52px; }
+  .illustration { height: 330px; }
+  .tourCopy { padding-top: 10px; }
   .tourCopy h1 { margin-top: 9px; font-size: 32px; }
   .tourCopy > p:last-child { margin-top: 10px; line-height: 1.55; }
-  .tourFooter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; margin-top: 10px; }
-  .dots, .tourFooter > .primary { grid-column: 1 / -1; }
-  .dots { margin-bottom: 4px; }
-  .tourFooter > p { margin: 0; justify-self: start; }
-  .tourFooter > p > span { display: none; }
-  .tourFooter > .illustrationCredit { margin: 0; justify-self: end; text-align: right; }
+  .tourFooter { margin-top: 28px; }
+  .dots { margin-bottom: 8px; }
+  .tourFooter > p { margin-top: 8px; }
 }
 @container phone (max-height: 740px) {
   .header { min-height: 52px; }
-  .illustration { height: 210px; }
+  .illustration { height: 250px; }
+  .tourFooter { margin-top: 24px; }
   .page { padding-top: 16px; }
-  .accessArt { height: 170px; margin-top: -10px; }
+  .accessArt { height: 210px; }
   .description { line-height: 1.6; margin-top: 12px; }
   .actions { margin-top: 20px; gap: 10px; }
 }
 @container phone (max-height: 660px) {
   .header { min-height: 48px; }
-  .illustration { height: clamp(100px, calc(100cqh - 490px), 170px); gap: 6px; }
+  .illustration { height: clamp(140px, calc(100cqh - 460px), 200px); gap: 6px; }
   .stockCard { padding: 10px 12px; gap: 10px; border-radius: 20px; }
   .metricIcon { width: 38px; height: 40px; }
   .stockCard strong { font-size: 23px; }
   .stockCard small { margin-bottom: 2px; }
   .tourCopy { padding-top: 10px; }
   .tourCopy h1, .page h1 { font-size: 30px; }
-  .tourFooter { margin-top: 4px; }
+  .tourFooter { margin-top: 20px; }
   .page, .authPage { padding-top: 8px; }
-  .accessArt { height: 120px; margin-top: 0; }
+  .accessArt { height: 160px; }
   .page > .eyebrow, .page:has(.accessArt) > .eyebrow { margin-top: 10px; }
   .authPage > .eyebrow { margin-top: 0; }
   .form, .authPage .form { margin-top: 18px; gap: 14px; }
@@ -161,11 +157,11 @@
   .splashContinue { margin-top: 16px; }
 }
 @container phone (max-height: 580px) {
-  .illustration { height: 100px; }
+  .illustration { height: 140px; }
   .tourCopy h1, .page h1 { font-size: 28px; letter-spacing: -1px; }
   .tourCopy > p:last-child { margin-top: 8px; }
   .tourCopy { padding-top: 8px; }
-  .accessArt { height: 100px; }
+  .accessArt { height: 140px; }
   .actions { margin-top: 14px; gap: 8px; }
   .splash h1 { font-size: 30px; }
 }

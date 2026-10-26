@@ -12,7 +12,7 @@ The current onboarding uses three illustrations from **Storyset’s Amico collec
 
 Copyright Freepik Company. These assets use the Freepik license offered on the source pages, which permits personal and commercial project use with attribution, including modifications. See [Storyset terms](https://storyset.com/terms) and [attribution FAQ](https://storyset.com/faqs). This project does not claim ownership of the illustrations.
 
-Every screen using an illustration includes a visible **Illustrations by Storyset** link to its source. Retain the credit when porting the UI to Flutter, unless the project obtains an appropriate license that permits use without attribution. The illustrations are incorporated in this app; they are not offered as a standalone asset pack.
+At the user’s request, the onboarding and account-entry screens no longer show the credit line. Attribution and links to all three sources are now collected in the visible **Illustration credits** section in shop Settings, implemented by `components/illustration-credits.tsx`. Preserve this in-app credit when porting to Flutter unless the project obtains an appropriate license permitting use without attribution. The terms and FAQ were checked again on 26 October 2026; credit has been relocated, not removed from the app. The illustrations are incorporated in this app; they are not offered as a standalone asset pack.
 
 ## Adaptations
 
@@ -51,3 +51,9 @@ Each prompt used this shared template, substituting the corresponding subject be
 #### Forecast subject
 
 > Three ivory and warm-gray grocery restock cartons, one open box with neat paper bags, alongside a freestanding small sculptural seven-column bar chart in warm gray with the last two bars burnt orange. A subtle orange curved upward arrow suggests planning future stock. No written labels, no words or numbers.
+
+## 26 October — onboarding layout refinement
+
+The desktop preview retains its original 394 × 846 portrait canvas and proportional fit. The main tour illustration region grows from 240px to 330px, increasing the artwork above its separate stock metric card. The heading and explanation start immediately after the compact logo header. Copy and footer have a 28px gap, followed by the page controls and an 8px gap before Continue. Sign in stays centered below the primary action. The enlarged illustration follows this upper text/action group with a 16px gap; its metric card stays in a separate row beneath the art. The account-entry illustration also grows to 260px and its extra top padding is removed. Short native viewports keep larger artwork and a minimum 20px separation before the tour actions, with scrolling when needed. No stock metric or illustration is clipped to force a fit.
+
+Onboarding credit labels have moved to Settings. Current browser appearance and animation playback remain pending because of the previously reported browser restriction.
